@@ -5,54 +5,53 @@ import "../api/runai.js";
 import papa from "papaparse";
 import { useEffect, useState } from "react";
 import DataFilter from "./DataFilter";
+import JsonData from "/data/Policies.json";
 import Calculator from "../components/calculator/calculator";
+import { index } from "mathjs";
 
-const addonIndNames = {
-  1: "Accidental Death Benefit",
-  2: "Termrider",
-  3.1: "Critical Illness Payout",
-  3.2: "Critical Illness No Premium Pay",
-  4: "Spouse Rider",
-  5.1: "Disability Payout",
-  5.2: "Disability No Premium Pay",
-  6: "Child Education Rider",
-  7: "Hospital Rider",
-  8: "Time Extension Rider",
-  9: "Funeral Expense Rider",
-  10: "Employment Loss No Premium Rider",
-  11: "Travel Add-on",
-  12: "Premium Return in Term Life",
-  65: "Loan Against Insured Amount",
-  66: "Grace Period for Pay",
-  67: "Discount for Salaried Employees",
-  68: "Online Discount",
-  69: "Free Annual Health Checkup Whole Body",
-  70: "Free Lookup Period",
-  71: "Policy Conversion",
-};
-const policyAddons = {
-  1: [1, 2, 3.1, 5.2, 7, 10, 65, 66, 68, 70],
-  2: [1, 2, 4, 6, 8, 11, 65, 67, 69, 71],
-  3: [1, 2, 3.2, 5.1, 9, 11, 65, 66, 67, 70],
-  4: [1, 2, 4, 7, 8, 10, 65, 68, 69, 71],
-  5: [1, 2, 3.1, 6, 9, 10, 65, 66, 69, 70],
-  6: [1, 2, 5.2, 7, 8, 11, 65, 67, 68, 71],
-  7: [1, 2, 3.2, 6, 8, 10, 65, 66, 67, 69],
-  8: [1, 2, 4, 5.1, 9, 11, 65, 68, 70, 71],
-  9: [1, 2, 3.1, 7, 8, 11, 65, 66, 69, 71],
-  10: [1, 2, 4, 6, 9, 10, 65, 67, 68, 70],
-  11: [1, 2, 3.2, 5.2, 7, 11, 65, 66, 67, 71],
-  12: [1, 2, 4, 6, 8, 9, 65, 68, 69, 70],
-  13: [1, 2, 3.1, 6, 7, 11, 65, 66, 70, 71],
-  14: [1, 2, 4, 5.1, 8, 10, 65, 67, 69, 70],
-  15: [1, 2, 3.2, 6, 9, 10, 65, 66, 68, 71],
-  16: [1, 2, 3.1, 7, 9, 12, 66, 68, 69, 71],
-  17: [1, 2, 4, 8, 11, 12, 67, 68, 70, 71],
-  18: [1, 2, 5.1, 6, 10, 12, 66, 67, 69, 70],
-  19: [1, 2, 3.2, 8, 11, 12, 66, 68, 70, 71],
-  20: [1, 2, 4, 6, 9, 12, 67, 69, 70, 71],
-  21: [1, 2, 5.2, 7, 10, 12, 66, 67, 68, 69],
-};
+
+let addonIndNames = {};
+JsonData["addonIndNames"].forEach((addon) => {
+  let keys = Object.keys(addon);
+  keys.forEach(key => {
+    addonIndNames[key] = addon[key];  // Store each key-value pair
+  });
+});
+
+// const addonIndNames = {
+//   1: "Accidental Death Benefit",
+//}
+
+let policyAddons = {};
+JsonData["policyAddons"].forEach((p_addon) => {
+  let keys = Object.keys(p_addon);
+  keys.forEach(key => {
+    policyAddons[key] = p_addon[key];  // Store each key-value pair
+  });
+});
+// const policyAddons = {
+//   1: [1, 2, 3.1, 5.2, 7, 10, 65, 66, 68, 70],
+//   2: [1, 2, 4, 6, 8, 11, 65, 67, 69, 71],
+//   3: [1, 2, 3.2, 5.1, 9, 11, 65, 66, 67, 70],
+//   4: [1, 2, 4, 7, 8, 10, 65, 68, 69, 71],
+//   5: [1, 2, 3.1, 6, 9, 10, 65, 66, 69, 70],
+//   6: [1, 2, 5.2, 7, 8, 11, 65, 67, 68, 71],
+//   7: [1, 2, 3.2, 6, 8, 10, 65, 66, 67, 69],
+//   8: [1, 2, 4, 5.1, 9, 11, 65, 68, 70, 71],
+//   9: [1, 2, 3.1, 7, 8, 11, 65, 66, 69, 71],
+//   10: [1, 2, 4, 6, 9, 10, 65, 67, 68, 70],
+//   11: [1, 2, 3.2, 5.2, 7, 11, 65, 66, 67, 71],
+//   12: [1, 2, 4, 6, 8, 9, 65, 68, 69, 70],
+//   13: [1, 2, 3.1, 6, 7, 11, 65, 66, 70, 71],
+//   14: [1, 2, 4, 5.1, 8, 10, 65, 67, 69, 70],
+//   15: [1, 2, 3.2, 6, 9, 10, 65, 66, 68, 71],
+//   16: [1, 2, 3.1, 7, 9, 12, 66, 68, 69, 71],
+//   17: [1, 2, 4, 8, 11, 12, 67, 68, 70, 71],
+//   18: [1, 2, 5.1, 6, 10, 12, 66, 67, 69, 70],
+//   19: [1, 2, 3.2, 8, 11, 12, 66, 68, 70, 71],
+//   20: [1, 2, 4, 6, 9, 12, 67, 69, 70, 71],
+//   21: [1, 2, 5.2, 7, 10, 12, 66, 67, 68, 69],
+// };
 
 const company1Policies = [1, 2, 3, 10, 11, 16, 17];
 const company2Policies = [4, 5, 6, 12, 13, 18, 19];
@@ -70,6 +69,7 @@ export default function Compare() {
     getData();
   }
 
+  
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -222,7 +222,6 @@ export default function Compare() {
   }, []);
 
   useEffect(() => {
-    console.log(formData);
 
     if (formData.name !== "") {
       let filteredData = DataFilter(formData);
@@ -665,7 +664,6 @@ async function calculatePremium(formData, policyNumber) {
     formData.age,
     formData.insuredTerm
   ); // Brought from the db
-  console.log(tabRate);
   // tabRatePromise.then(val => setTabRate(val))
 
   // Step 2: Get the loading charge using the provided loading charge function
@@ -817,7 +815,6 @@ async function fetchTabRateData(policyNumber) {
     const response = await fetch(url);
     const csvData = await response.text();
     const parsedData = papa.parse(csvData, { skipEmptyLines: true });
-    console.log("ParsedData", parsedData);
     return parsedData.data;
   } catch (error) {
     console.error(
