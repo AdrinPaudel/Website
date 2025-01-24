@@ -1,0 +1,36 @@
+
+.calculatorCard{
+    margin: 0.2vw;
+    padding: 1vw;
+    border-radius: 2vw;
+    width: 70%;
+    background-color: var(--secondaryA);
+    position: relative;
+  }
+  
+  .yearHeading {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: var(--secondary);
+  }
+  .lastingYear{
+    text-align: justify;
+    width:50%;
+    display: flex;
+    justify-content: center;
+    height: auto;
+    padding: 1rem;
+    padding-top: 1.2rem;
+    padding-bottom: 0.8rem;
+    color: var(--tertiary);
+    font-size: 1rem;
+    font-weight: bold;
+    margin: auto 0.5vw;
+    border-radius: 1.5vh;
+    background: linear-gradient(to right, var(--green), var(--secondary), var(--primary));
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2), inset 0 0 2000px var(--secondaryA);
+    color: var(--palewhite);
+    position: relative;
+  }
+  
