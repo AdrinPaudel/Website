@@ -67,5 +67,88 @@
   {"19": [1, 2, 3.2, 8, 11, 12, 66, 68, 70, 71]},
   {"20": [1, 2, 4, 6, 9, 12, 67, 69, 70, 71]},
   {"21": [1, 2, 5.2, 7, 10, 12, 66, 67, 68, 69]}
-    ]
+    ],
+    "hardcodedData":[
+        {"Add-on Number": "1","Add-on Name": "Accidental Death Benefit","Costper1k": 1},
+        { "Add-on Number": "2", "Add-on Name": "Termrider", "Costper1k": 5 },
+        {
+          "Add-on Number": "3.1",
+          "Add-on Name": "Critical Illness Payout",
+          "Costper1k": 2
+        },
+        {
+          "Add-on Number": "3.2",
+          "Add-on Name": "Critical Illness No Premium Pay",
+          "Costper1k": 1
+        },
+        { "Add-on Number": "4", "Add-on Name": "Spouse Rider", "Costper1k": 10 },
+        {
+          "Add-on Number": "5.1",
+          "Add-on Name": "Disability Payout",
+          "Costper1k": 2
+        },
+        {
+          "Add-on Number": "5.2",
+          "Add-on Name": "Disability No Premium Pay",
+          "Costper1k": 1
+        },
+        {
+          "Add-on Number": "6",
+          "Add-on Name": "Child Education Rider",
+          "Costper1k": 1
+        },
+        { "Add-on Number": "7", "Add-on Name": "Hospital Rider", "Costper1k": 3 },
+        {
+          "Add-on Number": "8",
+          "Add-on Name": "Time Extension Rider",
+          "Costper1k": 1
+        },
+        {
+          "Add-on Number": "9",
+          "Add-on Name": "Funeral Expense Rider",
+          "Costper1k": 0.25
+        },
+        {
+          "Add-on Number": "10",
+          "Add-on Name": "Employment Loss No Premium Rider",
+          "Costper1k": 10
+        },
+        { "Add-on Number": "11", "Add-on Name": "Travel Add-on", "Costper1k": 5 },
+        {
+          "Add-on Number": "12",
+          "Add-on Name": "Premium Return in Term Life",
+          "Costper1k": 3
+        },
+        {
+          "Add-on Number": "65",
+          "Add-on Name": "Loan Against Insured Amount",
+          "Costper1k": 0
+        },
+        {
+          "Add-on Number": "66",
+          "Add-on Name": "Grace Period for Pay",
+          "Costper1k": 0
+        },
+        {
+          "Add-on Number": "67",
+          "Add-on Name": "Discount for Salaried Employees",
+          "Costper1k": 0
+        },
+        { "Add-on Number": "68", "Add-on Name": "Online Discount", "Costper1k": 0 },
+        {
+          "Add-on Number": "69",
+          "Add-on Name": "Free Annual Health Checkup Whole Body",
+          "Costper1k": 0
+        },
+        {
+          "Add-on Number": "70",
+          "Add-on Name": "Free Lookup Period",
+          "Costper1k": 0
+        },
+        {
+          "Add-on Number": "71",
+          "Add-on Name": "Policy Conversion",
+          "Costper1k": 0
+        }
+      ]
 }

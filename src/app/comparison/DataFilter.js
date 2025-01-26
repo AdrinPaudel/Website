@@ -6,8 +6,7 @@ import { forEach, index } from "mathjs";
 
 export default function DataFilter(data) {
   // Log all user data to check what is being passed from page.js
-  // console.log("User data before filtering:", data);
-
+ 
   // Convert relevant fields from string to number for proper comparison
   const age = data.age;
   const income = data.income;
@@ -37,7 +36,6 @@ export default function DataFilter(data) {
 
 
   // Log the policies before filtering
-  // console.log("Policies before filtering:", policies);
 
   const filteredPolicies = policies
     .filter((policy) => {
@@ -62,7 +60,6 @@ export default function DataFilter(data) {
     });
 
   // Log filtered policies to see which are available
-  // console.log("Available Policies after Filtering:", filteredPolicies);
 
   return filteredPolicies
   return "hello"

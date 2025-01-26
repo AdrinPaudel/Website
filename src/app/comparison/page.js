@@ -31,27 +31,7 @@ JsonData["policyAddons"].forEach((p_addon) => {
 });
 // const policyAddons = {
 //   1: [1, 2, 3.1, 5.2, 7, 10, 65, 66, 68, 70],
-//   2: [1, 2, 4, 6, 8, 11, 65, 67, 69, 71],
-//   3: [1, 2, 3.2, 5.1, 9, 11, 65, 66, 67, 70],
-//   4: [1, 2, 4, 7, 8, 10, 65, 68, 69, 71],
-//   5: [1, 2, 3.1, 6, 9, 10, 65, 66, 69, 70],
-//   6: [1, 2, 5.2, 7, 8, 11, 65, 67, 68, 71],
-//   7: [1, 2, 3.2, 6, 8, 10, 65, 66, 67, 69],
-//   8: [1, 2, 4, 5.1, 9, 11, 65, 68, 70, 71],
-//   9: [1, 2, 3.1, 7, 8, 11, 65, 66, 69, 71],
-//   10: [1, 2, 4, 6, 9, 10, 65, 67, 68, 70],
-//   11: [1, 2, 3.2, 5.2, 7, 11, 65, 66, 67, 71],
-//   12: [1, 2, 4, 6, 8, 9, 65, 68, 69, 70],
-//   13: [1, 2, 3.1, 6, 7, 11, 65, 66, 70, 71],
-//   14: [1, 2, 4, 5.1, 8, 10, 65, 67, 69, 70],
-//   15: [1, 2, 3.2, 6, 9, 10, 65, 66, 68, 71],
-//   16: [1, 2, 3.1, 7, 9, 12, 66, 68, 69, 71],
-//   17: [1, 2, 4, 8, 11, 12, 67, 68, 70, 71],
-//   18: [1, 2, 5.1, 6, 10, 12, 66, 67, 69, 70],
-//   19: [1, 2, 3.2, 8, 11, 12, 66, 68, 70, 71],
-//   20: [1, 2, 4, 6, 9, 12, 67, 69, 70, 71],
-//   21: [1, 2, 5.2, 7, 10, 12, 66, 67, 68, 69],
-// };
+//  }
 
 const company1Policies = [1, 2, 3, 10, 11, 16, 17];
 const company2Policies = [4, 5, 6, 12, 13, 18, 19];
@@ -127,93 +107,26 @@ export default function Compare() {
   }
 
   useEffect(() => {
-    const hardcodedData = [
-      {
-        "Add-on Number": "1",
-        "Add-on Name": "Accidental Death Benefit",
-        Costper1k: 1,
-      },
-      { "Add-on Number": "2", "Add-on Name": "Termrider", Costper1k: 5 },
-      {
-        "Add-on Number": "3.1",
-        "Add-on Name": "Critical Illness Payout",
-        Costper1k: 2,
-      },
-      {
-        "Add-on Number": "3.2",
-        "Add-on Name": "Critical Illness No Premium Pay",
-        Costper1k: 1,
-      },
-      { "Add-on Number": "4", "Add-on Name": "Spouse Rider", Costper1k: 10 },
-      {
-        "Add-on Number": "5.1",
-        "Add-on Name": "Disability Payout",
-        Costper1k: 2,
-      },
-      {
-        "Add-on Number": "5.2",
-        "Add-on Name": "Disability No Premium Pay",
-        Costper1k: 1,
-      },
-      {
-        "Add-on Number": "6",
-        "Add-on Name": "Child Education Rider",
-        Costper1k: 1,
-      },
-      { "Add-on Number": "7", "Add-on Name": "Hospital Rider", Costper1k: 3 },
-      {
-        "Add-on Number": "8",
-        "Add-on Name": "Time Extension Rider",
-        Costper1k: 1,
-      },
-      {
-        "Add-on Number": "9",
-        "Add-on Name": "Funeral Expense Rider",
-        Costper1k: 0.25,
-      },
-      {
-        "Add-on Number": "10",
-        "Add-on Name": "Employment Loss No Premium Rider",
-        Costper1k: 10,
-      },
-      { "Add-on Number": "11", "Add-on Name": "Travel Add-on", Costper1k: 5 },
-      {
-        "Add-on Number": "12",
-        "Add-on Name": "Premium Return in Term Life",
-        Costper1k: 3,
-      },
-      {
-        "Add-on Number": "65",
-        "Add-on Name": "Loan Against Insured Amount",
-        Costper1k: 0,
-      },
-      {
-        "Add-on Number": "66",
-        "Add-on Name": "Grace Period for Pay",
-        Costper1k: 0,
-      },
-      {
-        "Add-on Number": "67",
-        "Add-on Name": "Discount for Salaried Employees",
-        Costper1k: 0,
-      },
-      { "Add-on Number": "68", "Add-on Name": "Online Discount", Costper1k: 0 },
-      {
-        "Add-on Number": "69",
-        "Add-on Name": "Free Annual Health Checkup Whole Body",
-        Costper1k: 0,
-      },
-      {
-        "Add-on Number": "70",
-        "Add-on Name": "Free Lookup Period",
-        Costper1k: 0,
-      },
-      {
-        "Add-on Number": "71",
-        "Add-on Name": "Policy Conversion",
-        Costper1k: 0,
-      },
-    ];
+
+    let hardcodedData = [];
+    JsonData["hardcodedData"].forEach((hData) => {
+      let keyValuePairs = {};
+    
+      Object.keys(hData).forEach(key => {
+          keyValuePairs[key] = hData[key]; 
+    
+      hardcodedData.push(keyValuePairs);
+    })});
+
+    console.log(hardcodedData);
+    
+
+    // const hardcodedData = [
+    //   {
+    //     "Add-on Number": "1",
+    //     "Add-on Name": "Accidental Death Benefit",
+    //     Costper1k: 1,
+    //   },
 
     setAddonData(hardcodedData);
 
@@ -628,11 +541,11 @@ function calculateTotalAddonsCost(selectedAddons, formData) {
     12: 3, // Premium Return in Term Life
     65: 0, // Loan Against Insured Amount
     66: 0, // Grace Period for Pay
-    67: 0, // Discount for Salaried Employees
-    68: 0, // Online Discount
-    69: 0, // Free Annual Health Checkup Whole Body
-    70: 0, // Free Lookup Period
-    71: 0, // Policy Conversion
+    67: 0, // 
+    68: 0, // 
+    69: 0, // 
+    70: 0, // 
+    71: 0, // 
   };
 
   // Step 1: Initialize total addon cost
@@ -728,7 +641,6 @@ function findTabRateForMoneyBack(tabRateData, age, insuredTerm) {
     .find((row) => parseInt(row[0]) == age)
     .slice(1);
 
-  // console.log("ageRow", age, toplessTabRateData, ageRow)
   if (!ageRow) {
     console.error(`Age ${age} not found in the tab rate data for Money Back.`);
     return null; // Return null if the age isn't found
@@ -740,7 +652,6 @@ function findTabRateForMoneyBack(tabRateData, age, insuredTerm) {
     (val) => parseInt(termList[val]) == insuredTerm
   );
 
-  // console.log("termList", age, toplessTabRateData, termList)
   if (!insuredTermPosition) {
     console.error(
       `Insured term ${insuredTerm} not found in the tab rate data for Money Back.`
@@ -758,7 +669,6 @@ function findTabRateForTermLife(tabRateData, rowVal, columnVal) {
     .find((row) => parseInt(row[0]) == rowVal)
     .slice(1);
 
-  // console.log("ageRow", age, toplessTabRateData, ageRow)
   if (!ageRow) {
     console.error(
       `Age ${rowVal} not found in the tab rate data for Money Back.`
@@ -772,7 +682,6 @@ function findTabRateForTermLife(tabRateData, rowVal, columnVal) {
     (val) => parseInt(termList[val]) == columnVal
   );
 
-  // console.log("termList", age, toplessTabRateData, termList)
   if (!insuredTermPosition) {
     console.error(
       `Insured term ${columnVal} not found in the tab rate data for Money Back.`
@@ -926,7 +835,6 @@ setComparisonResult(
                           }                        
                         }
                     }
-                    console.log("bot", newFilteredData)
 
 
                     let policy_num = arr["policy"]
