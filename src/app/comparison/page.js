@@ -5,33 +5,54 @@ import "../api/runai.js";
 import papa from "papaparse";
 import { useEffect, useState } from "react";
 import DataFilter from "./DataFilter";
-import JsonData from "/data/Policies.json";
 import Calculator from "../components/calculator/calculator";
-import { index } from "mathjs";
 
-
-let addonIndNames = {};
-JsonData["addonIndNames"].forEach((addon) => {
-  let keys = Object.keys(addon);
-  keys.forEach(key => {
-    addonIndNames[key] = addon[key];  // Store each key-value pair
-  });
-});
-
-// const addonIndNames = {
-//   1: "Accidental Death Benefit",
-//}
-
-let policyAddons = {};
-JsonData["policyAddons"].forEach((p_addon) => {
-  let keys = Object.keys(p_addon);
-  keys.forEach(key => {
-    policyAddons[key] = p_addon[key];  // Store each key-value pair
-  });
-});
-// const policyAddons = {
-//   1: [1, 2, 3.1, 5.2, 7, 10, 65, 66, 68, 70],
-//  }
+const addonIndNames = {
+  1: "Accidental Death Benefit",
+  2: "Termrider",
+  3.1: "Critical Illness Payout",
+  3.2: "Critical Illness No Premium Pay",
+  4: "Spouse Rider",
+  5.1: "Disability Payout",
+  5.2: "Disability No Premium Pay",
+  6: "Child Education Rider",
+  7: "Hospital Rider",
+  8: "Time Extension Rider",
+  9: "Funeral Expense Rider",
+  10: "Employment Loss No Premium Rider",
+  11: "Travel Add-on",
+  12: "Premium Return in Term Life",
+  65: "Loan Against Insured Amount",
+  66: "Grace Period for Pay",
+  67: "Discount for Salaried Employees",
+  68: "Online Discount",
+  69: "Free Annual Health Checkup Whole Body",
+  70: "Free Lookup Period",
+  71: "Policy Conversion",
+};
+const policyAddons = {
+  1: [1, 2, 3.1, 5.2, 7, 10, 65, 66, 68, 70],
+  2: [1, 2, 4, 6, 8, 11, 65, 67, 69, 71],
+  3: [1, 2, 3.2, 5.1, 9, 11, 65, 66, 67, 70],
+  4: [1, 2, 4, 7, 8, 10, 65, 68, 69, 71],
+  5: [1, 2, 3.1, 6, 9, 10, 65, 66, 69, 70],
+  6: [1, 2, 5.2, 7, 8, 11, 65, 67, 68, 71],
+  7: [1, 2, 3.2, 6, 8, 10, 65, 66, 67, 69],
+  8: [1, 2, 4, 5.1, 9, 11, 65, 68, 70, 71],
+  9: [1, 2, 3.1, 7, 8, 11, 65, 66, 69, 71],
+  10: [1, 2, 4, 6, 9, 10, 65, 67, 68, 70],
+  11: [1, 2, 3.2, 5.2, 7, 11, 65, 66, 67, 71],
+  12: [1, 2, 4, 6, 8, 9, 65, 68, 69, 70],
+  13: [1, 2, 3.1, 6, 7, 11, 65, 66, 70, 71],
+  14: [1, 2, 4, 5.1, 8, 10, 65, 67, 69, 70],
+  15: [1, 2, 3.2, 6, 9, 10, 65, 66, 68, 71],
+  16: [1, 2, 3.1, 7, 9, 12, 66, 68, 69, 71],
+  17: [1, 2, 4, 8, 11, 12, 67, 68, 70, 71],
+  18: [1, 2, 5.1, 6, 10, 12, 66, 67, 69, 70],
+  19: [1, 2, 3.2, 8, 11, 12, 66, 68, 70, 71],
+  20: [1, 2, 4, 6, 9, 12, 67, 69, 70, 71],
+  21: [1, 2, 5.2, 7, 10, 12, 66, 67, 68, 69],
+};
 
 const company1Policies = [1, 2, 3, 10, 11, 16, 17];
 const company2Policies = [4, 5, 6, 12, 13, 18, 19];
@@ -49,7 +70,6 @@ export default function Compare() {
     getData();
   }
 
-  
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -107,26 +127,82 @@ export default function Compare() {
   }
 
   useEffect(() => {
-
-    let hardcodedData = [];
-    JsonData["hardcodedData"].forEach((hData) => {
-      let keyValuePairs = {};
-    
-      Object.keys(hData).forEach(key => {
-          keyValuePairs[key] = hData[key]; 
-    
-      hardcodedData.push(keyValuePairs);
-    })});
-
-    console.log(hardcodedData);
-    
-
-    // const hardcodedData = [
-    //   {
-    //     "Add-on Number": "1",
-    //     "Add-on Name": "Accidental Death Benefit",
-    //     Costper1k: 1,
-    //   },
+    const hardcodedData = [
+      {
+        "Add-on Number": "1",
+        "Add-on Name": "Accidental Death Benefit",
+      },
+      { "Add-on Number": "2", "Add-on Name": "Termrider", 
+      },
+      {
+        "Add-on Number": "3.1",
+        "Add-on Name": "Critical Illness Payout",
+      },
+      {
+        "Add-on Number": "3.2",
+        "Add-on Name": "Critical Illness No Premium Pay",
+      },
+      { "Add-on Number": "4", "Add-on Name": "Spouse Rider", 
+      },
+      {
+        "Add-on Number": "5.1",
+        "Add-on Name": "Disability Payout",
+      },
+      {
+        "Add-on Number": "5.2",
+        "Add-on Name": "Disability No Premium Pay",
+      },
+      {
+        "Add-on Number": "6",
+        "Add-on Name": "Child Education Rider",
+      },
+      { "Add-on Number": "7", "Add-on Name": "Hospital Rider", 
+      },
+      {
+        "Add-on Number": "8",
+        "Add-on Name": "Time Extension Rider",
+      },
+      {
+        "Add-on Number": "9",
+        "Add-on Name": "Funeral Expense Rider",
+      },
+      {
+        "Add-on Number": "10",
+        "Add-on Name": "Employment Loss No Premium Rider",
+      },
+      { "Add-on Number": "11", "Add-on Name": "Travel Add-on", 
+      },
+      {
+        "Add-on Number": "12",
+        "Add-on Name": "Premium Return in Term Life",
+      },
+      {
+        "Add-on Number": "65",
+        "Add-on Name": "Loan Against Insured Amount",
+      },
+      {
+        "Add-on Number": "66",
+        "Add-on Name": "Grace Period for Pay",
+      },
+      {
+        "Add-on Number": "67",
+        "Add-on Name": "Discount for Salaried Employees",
+      },
+      { "Add-on Number": "68", "Add-on Name": "Online Discount", 
+      },
+      {
+        "Add-on Number": "69",
+        "Add-on Name": "Free Annual Health Checkup Whole Body",
+      },
+      {
+        "Add-on Number": "70",
+        "Add-on Name": "Free Lookup Period",
+      },
+      {
+        "Add-on Number": "71",
+        "Add-on Name": "Policy Conversion",
+      },
+    ];
 
     setAddonData(hardcodedData);
 
@@ -135,6 +211,7 @@ export default function Compare() {
   }, []);
 
   useEffect(() => {
+    console.log(formData);
 
     if (formData.name !== "") {
       let filteredData = DataFilter(formData);
@@ -196,7 +273,6 @@ export default function Compare() {
             <div className="cardCSR">
               CSR: {policy.csr ? policy.csr : "N/A"}
             </div><br/>
-            {/* {selectedAddons.join(", ")}. AddonCost:{" "} */}
             <div className="cardCost">
               <div className="cardPremiumCost">
                 Premium: {policy.premium ? policy.premium : "0"}
@@ -350,13 +426,12 @@ export default function Compare() {
         <>
           <div className="comparisonView">
             {
-              // POLICY FILTERED CARDS
+              // POLICY FILTERED CARD
             }
             <div id="policyCards">{comparisonResult}</div>
-
             <div id="majorView">
               <h1> Choose an Add-on </h1>
-              <div id="filterinfoicon">
+              <div id="filterinfoicon" onClick={() => window.location.href = '/addonsdetails'}>
                 ⓘ
                 <span id="filterinfo">
                   Click on a addon to filter the policies
@@ -366,8 +441,7 @@ export default function Compare() {
               <div id="filterFree" className="filter">
                 {addonData.map((addon, index) => {
                   if (
-                    addon["Add-on Number"] != "" &&
-                    addon["Costper1k"] == "0"
+                    addon["Add-on Number"] > 60
                   ) {
                     return (
                       <div key={index} className="filterAddons">
@@ -577,6 +651,7 @@ async function calculatePremium(formData, policyNumber) {
     formData.age,
     formData.insuredTerm
   ); // Brought from the db
+  console.log(tabRate);
   // tabRatePromise.then(val => setTabRate(val))
 
   // Step 2: Get the loading charge using the provided loading charge function
@@ -591,17 +666,6 @@ async function calculatePremium(formData, policyNumber) {
 
   // Step 5: Divide by the term (to get the premium per term)
   const premiumPerTerm = premiumBase / formData.term;
-
-  /*
-  // Step 6: Get the total addon cost (using the calculateTotalAddonsCost function)
-  const totalAddonCost = calculateTotalAddonsCost(selectedAddons, formData.insuredAmount);
-
-  // Step 7: Divide the addon cost by the term (to get addon cost per term)
-  const addonCostPerTerm = totalAddonCost / formData.term;
-
-  // Step 8: Calculate the total premium (base premium + addon cost)
-  const totalPremium = premiumPerTerm + addonCostPerTerm;
-  */
 
   // Return both the premium base and total premium with addons
   return Math.round(premiumPerTerm*100)/100;
@@ -724,6 +788,7 @@ async function fetchTabRateData(policyNumber) {
     const response = await fetch(url);
     const csvData = await response.text();
     const parsedData = papa.parse(csvData, { skipEmptyLines: true });
+    console.log("ParsedData", parsedData);
     return parsedData.data;
   } catch (error) {
     console.error(
@@ -797,156 +862,3 @@ const getCompanyName = (policyNumber) => {
 const getAddonName = (addonId) => {
   return addonData[addonId] || "";
 };
-
-// i had to remove this cz this made me pagal .. now this has to be re added
-/*
-setComparisonResult(
-      filteredData.map((arr, index) => {
-                  let policy_addons = arr["policy"] == 1 ? [1, 2, 3.1, 5.2, 7, 10, 65, 66, 68, 70] :
-                    arr["policy"] == 2 ? [1, 2, 4, 6, 8, 11, 65, 67, 69, 71] :
-                      arr["policy"] == 3 ? [1, 2, 3.2, 5.1, 9, 11, 65, 66, 67, 70] :
-                        arr["policy"] == 4 ? [1, 2, 4, 7, 8, 10, 65, 68, 69, 71] :
-                          arr["policy"] == 5 ? [1, 2, 3.1, 6, 9, 10, 65, 66, 69, 70] :
-                            arr["policy"] == 6 ? [1, 2, 5.2, 7, 8, 11, 65, 67, 68, 71] :
-                              arr["policy"] == 7 ? [1, 2, 3.2, 6, 8, 10, 65, 66, 67, 69] :
-                                arr["policy"] == 8 ? [1, 2, 4, 5.1, 9, 11, 65, 68, 70, 71] :
-                                  arr["policy"] == 9 ? [1, 2, 3.1, 7, 8, 11, 65, 66, 69, 71] :
-                                    arr["policy"] == 10 ? [1, 2, 4, 6, 9, 10, 65, 67, 68, 70] :
-                                      arr["policy"] == 11 ? [1, 2, 3.2, 5.2, 7, 11, 65, 66, 67, 71] :
-                                        arr["policy"] == 12 ? [1, 2, 4, 6, 8, 9, 65, 68, 69, 70] :
-                                          arr["policy"] == 13 ? [1, 2, 3.1, 6, 7, 11, 65, 66, 70, 71] :
-                                            arr["policy"] == 14 ? [1, 2, 4, 5.1, 8, 10, 65, 67, 69, 70] :
-                                              arr["policy"] == 15 ? [1, 2, 3.2, 6, 9, 10, 65, 66, 68, 71] :
-                                                arr["policy"] == 16 ? [1, 2, 3.1, 7, 9, 12, 66, 68, 69, 71] :
-                                                  arr["policy"] == 17 ? [1, 2, 4, 8, 11, 12, 67, 68, 70, 71] :
-                                                    arr["policy"] == 18 ? [1, 2, 5.1, 6, 10, 12, 66, 67, 69, 70] :
-                                                      arr["policy"] == 19 ? [1, 2, 3.2, 8, 11, 12, 66, 68, 70, 71] :
-                                                        arr["policy"] == 20 ? [1, 2, 4, 6, 9, 12, 67, 69, 70, 71] : 
-                                                           arr["policy"] == 21 ? [1, 2, 5.2, 7, 10, 12, 66, 67, 68, 69] : []
-
-                    let newFilteredData = []
-
-                    for (let j = 0; j < selectedAddons.length; j++) {
-                      if (!policy_addons.includes(selectedAddons[j])) {
-                          for(let k=0; k < filteredData.length; k++){
-                            if (filteredData[k] != filteredData[i]){
-                              newFilteredData.push(filteredData[k])
-                            }
-                          }                        
-                        }
-                    }
-
-
-                    let policy_num = arr["policy"]
-                    const policies = {
-                      1: "Himalayan Life Endowment Plan",
-                      2: "Himalayan Life Bachhat Beema Plan",
-                      3: "Himalayan Life Sunaulo Bhabishya Plan",
-                      4: "Lic Endowment Plan",
-                      5: "Lic Unnat Plan",
-                      6: "Lic Sajilo Beema Plan",
-                      7: "Nepal Life Endowment Plan",
-                      8: "Nepal Life Safalta Plan",
-                      9: "Nepal Life Uttam Beema Plan",
-                      10: "Himalayan Life Money Back Plan",
-                      11: "Himalayan Life Bhabiswa Yojana Plan",
-                      12: "Lic Money Back Plan",
-                      13: "Lic Bhabishya Plan",
-                      14: "Nepal Life Money Back Plan",
-                      15: "Nepal Life Samriddhi Plan",
-                      16: "Himalayan Life Term Life Plan",
-                      17: "Himalayan Life Suraksha Beema Plan",
-                      18: "Lic Term Life Plan",
-                      19: "Lic Jeevan Suraksha Plan",
-                      20: "Nepal Life Term Life Plan",
-                      21: "Nepal Life Jeevan Shakti Plan",
-                    };
-
-                    return (
-                      <div key={index} className="filteredPolicies">
-                        <div className="cardscompany">
-                          {
-                            <div className="policyName">{policies[policy_num]}</div>
-                          }
-                          <div className="cardscsr">{
-                            (company1Policies.includes(policy_num)) ? 83 :
-                              (company2Policies.includes(policy_num)) ? 95 :
-                                (company3Policies.includes(policy_num)) ? 87 : 0
-                          }
-                          </div>
-                          <span className="policyType">
-                            {
-                              (1 <= policy_num && policy_num <= 9) ? "Endowment" :
-                                (10 <= policy_num && policy_num <= 15) ? "Money Back" :
-                                  (16 <= policy_num && policy_num <= 21) ? "Term Life" : ""
-                            }
-                          </span>
-                          <div className="cardspolicynum">{policy_num}</div>
-                        </div>
-                        <div className="companyName">
-                          {
-                            (company1Policies.includes(policy_num)) ? "Himalayan Life Insurance" :
-                              (company2Policies.includes(policy_num)) ? "Life Insurance Corporation Nepal" :
-                                (company3Policies.includes(policy_num)) ? "Nepal Life" : ""
-                          }
-                        </div>
-
-
-                        <div className="cardspremium">Rs {Math.floor(arr["premium"] * 100) / 100} </div>
-                        <div className="cardsaddons">
-                          <span className="cardsaddonsTitle">Addons</span>
-                          <div className="cardsaddonscontent">
-                            {
-                              policy_addons.map((addon, index) => {
-                                let addonName = ""
-                                if (addon == 1) {
-                                  addonName = "Accident Death Benefit"
-                                } else if (addon == 2) {
-                                  addonName = "Termrider"
-                                } else if (addon == 3) {
-                                  addonName = "Critical Illness Payout"
-                                } else if (addon == 4) {
-                                  addonName = "Spouse Rider"
-                                } else if (addon == 5) {
-                                  addonName = "Disability Payout"
-                                } else if (addon == 6) {
-                                  addonName = "Child Education Rider"
-                                } else if (addon == 7) {
-                                  addonName = "Hospital Rider"
-                                } else if (addon == 8) {
-                                  addonName = "Time Extension Rider"
-                                } else if (addon == 9) {
-                                  addonName = "Funeral Expense Rider"
-                                } else if (addon == 10) {
-                                  addonName = "Employment Loss No Premium Rider"
-                                } else if (addon == 11) {
-                                  addonName = "Travel Add-on"
-                                } else if (addon == 12) {
-                                  addonName = "Premium Return in Term Life"
-                                } else if (addon == 65) {
-                                  addonName = "Loan Against Insured Amount"
-                                } else if (addon == 66) {
-                                  addonName = "Grace Period for Pay"
-                                } else if (addon == 67) {
-                                  addonName = "Discount for Salaried Employees"
-                                } else if (addon == 68) {
-                                  addonName = "Online Discount"
-                                } else if (addon == 69) {
-                                  addonName = "Free Annual Health Checkup Whole Body"
-                                } else if (addon == 70) {
-                                  addonName = "Free Lookup Period"
-                                } else if (addon == 71) {
-                                  addonName = "Policy Conversion"
-                                }
-                                return (addon > 65 ? <div id="addonPaid" key={index}> {addonName} </div>
-                                  : <div id="addonFree" key={index}> {addonName} </div>)
-                              })
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    )
-
-                })
-              )
-*/
