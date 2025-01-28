@@ -7,52 +7,23 @@ import { useEffect, useState } from "react";
 import DataFilter from "./DataFilter";
 import Calculator from "../components/calculator/calculator";
 
-const addonIndNames = {
-  1: "Accidental Death Benefit",
-  2: "Termrider",
-  3.1: "Critical Illness Payout",
-  3.2: "Critical Illness No Premium Pay",
-  4: "Spouse Rider",
-  5.1: "Disability Payout",
-  5.2: "Disability No Premium Pay",
-  6: "Child Education Rider",
-  7: "Hospital Rider",
-  8: "Time Extension Rider",
-  9: "Funeral Expense Rider",
-  10: "Employment Loss No Premium Rider",
-  11: "Travel Add-on",
-  12: "Premium Return in Term Life",
-  65: "Loan Against Insured Amount",
-  66: "Grace Period for Pay",
-  67: "Discount for Salaried Employees",
-  68: "Online Discount",
-  69: "Free Annual Health Checkup Whole Body",
-  70: "Free Lookup Period",
-  71: "Policy Conversion",
-};
-const policyAddons = {
-  1: [1, 2, 3.1, 5.2, 7, 10, 65, 66, 68, 70],
-  2: [1, 2, 4, 6, 8, 11, 65, 67, 69, 71],
-  3: [1, 2, 3.2, 5.1, 9, 11, 65, 66, 67, 70],
-  4: [1, 2, 4, 7, 8, 10, 65, 68, 69, 71],
-  5: [1, 2, 3.1, 6, 9, 10, 65, 66, 69, 70],
-  6: [1, 2, 5.2, 7, 8, 11, 65, 67, 68, 71],
-  7: [1, 2, 3.2, 6, 8, 10, 65, 66, 67, 69],
-  8: [1, 2, 4, 5.1, 9, 11, 65, 68, 70, 71],
-  9: [1, 2, 3.1, 7, 8, 11, 65, 66, 69, 71],
-  10: [1, 2, 4, 6, 9, 10, 65, 67, 68, 70],
-  11: [1, 2, 3.2, 5.2, 7, 11, 65, 66, 67, 71],
-  12: [1, 2, 4, 6, 8, 9, 65, 68, 69, 70],
-  13: [1, 2, 3.1, 6, 7, 11, 65, 66, 70, 71],
-  14: [1, 2, 4, 5.1, 8, 10, 65, 67, 69, 70],
-  15: [1, 2, 3.2, 6, 9, 10, 65, 66, 68, 71],
-  16: [1, 2, 3.1, 7, 9, 12, 66, 68, 69, 71],
-  17: [1, 2, 4, 8, 11, 12, 67, 68, 70, 71],
-  18: [1, 2, 5.1, 6, 10, 12, 66, 67, 69, 70],
-  19: [1, 2, 3.2, 8, 11, 12, 66, 68, 70, 71],
-  20: [1, 2, 4, 6, 9, 12, 67, 69, 70, 71],
-  21: [1, 2, 5.2, 7, 10, 12, 66, 67, 68, 69],
-};
+
+let addonIndNames = {};
+JsonData["addonIndNames"].forEach((addon) => {
+  let keys = Object.keys(addon);
+  keys.forEach(key => {
+    addonIndNames[key] = addon[key];  // Store each key-value pair
+  });
+});
+
+
+let policyAddons = {};
+JsonData["policyAddons"].forEach((p_addon) => {
+  let keys = Object.keys(p_addon);
+  keys.forEach(key => {
+    policyAddons[key] = p_addon[key];  // Store each key-value pair
+  });
+});
 
 const company1Policies = [1, 2, 3, 10, 11, 16, 17];
 const company2Policies = [4, 5, 6, 12, 13, 18, 19];
@@ -598,30 +569,7 @@ function calculateRebate(policyNumber, formData) {
 
 function calculateTotalAddonsCost(selectedAddons, formData) {
   // Define the addon costs (addon number -> cost per 1k)
-  const addonCosts = {
-    1: 1, // Accidental Death Benefit
-    2: 5, // Termrider
-    3.1: 2, // Critical Illness Payout
-    3.2: 1, // Critical Illness No Premium Pay
-    4: 10, // Spouse Rider
-    5.1: 2, // Disability Payout
-    5.2: 1, // Disability No Premium Pay
-    6: 1, // Child Education Rider
-    7: 3, // Hospital Rider
-    8: 1, // Time Extension Rider
-    9: 0.25, // Funeral Expense Rider
-    10: 10, // Employment Loss No Premium Rider
-    11: 5, // Travel Add-on
-    12: 3, // Premium Return in Term Life
-    65: 0, // Loan Against Insured Amount
-    66: 0, // Grace Period for Pay
-    67: 0, // 
-    68: 0, // 
-    69: 0, // 
-    70: 0, // 
-    71: 0, // 
-  };
-
+  const addonCosts = JsonData["addonCosts"];
   // Step 1: Initialize total addon cost
   let totalAddonCost = 0;
 
@@ -805,30 +753,7 @@ const hasAddonForPolicy = (policyNumber, addonId) => {
   return addons && addons.includes(addonId) ? 1 : 0;
 };
 
-const policyData = [
-  { policyNumber: 1, name: "Himalayan Life Endowment Plan", csr: 88.3 },
-  { policyNumber: 2, name: "Himalayan Life Bachhat Beema Plan", csr: 92.1 },
-  { policyNumber: 3, name: "Himalayan Life Sunaulo Bhabishya Plan", csr: 86.5 },
-  { policyNumber: 4, name: "Lic Endowment Plan", csr: 89.2 },
-  { policyNumber: 5, name: "Lic Unnat Plan", csr: 91.4 },
-  { policyNumber: 6, name: "Lic Sajilo Beema Plan", csr: 94.0 },
-  { policyNumber: 7, name: "Nepal Life Endowment Plan", csr: 87.7 },
-  { policyNumber: 8, name: "Nepal Life Safalta Plan", csr: 90.3 },
-  { policyNumber: 9, name: "Nepal Life Uttam Beema Plan", csr: 93.5 },
-  { policyNumber: 10, name: "Himalayan Life Money Back Plan", csr: 85.6 },
-  { policyNumber: 11, name: "Himalayan Life Bhabiswa Yojana Plan", csr: 92.8 },
-  { policyNumber: 12, name: "Lic Money Back Plan", csr: 90.9 },
-  { policyNumber: 13, name: "Lic Bhabishya Plan", csr: 89.6 },
-  { policyNumber: 14, name: "Nepal Life Money Back Plan", csr: 91.1 },
-  { policyNumber: 15, name: "Nepal Life Samriddhi Plan", csr: 94.4 },
-  { policyNumber: 16, name: "Himalayan Life Term Life Plan", csr: 86.9 },
-  { policyNumber: 17, name: "Himalayan Life Suraksha Beema Plan", csr: 93.1 },
-  { policyNumber: 18, name: "Lic Term Life Plan", csr: 89.9 },
-  { policyNumber: 19, name: "Lic Jeevan Suraksha Plan", csr: 95.0 },
-  { policyNumber: 20, name: "Nepal Life Term Life Plan", csr: 87.2 },
-  { policyNumber: 21, name: "Nepal Life Jeevan Shakti Plan", csr: 91.7 },
-];
-
+const policyData = JsonData["policyData"];
 // Function to get CSR by policy number
 const getCsrByPolicyNumber = (policyNumber) => {
   const policy = policyData.find((p) => p.policyNumber === policyNumber);
@@ -842,6 +767,7 @@ const getPolicyNameByPolicyNumber = (policyNumber) => {
 };
 
 
+<<<<<<< HEAD
 const companyPolicies = {
   1: "Himalayan Life",
   2: "Life Insurance Corporation Nepal",

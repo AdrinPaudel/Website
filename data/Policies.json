@@ -1,154 +1,839 @@
 {
-    "policies" : [
-        { "policy": 1, "min": 200000, "max": 5000000, "minEntry": 18, "maxEntry": 60, "minYears": 5, "maxYa": "70", "maxYb":"52" },
-        { "policy": 2, "min": 300000, "max": 7500000, "minEntry": 18, "maxEntry": 55, "minYears": 5, "maxYa": "70", "maxYb":"50" },
-        { "policy": 3, "min": 250000, "max": 6000000, "minEntry": 18, "maxEntry": 60, "minYears": 5, "maxYa": "70", "maxYb":"45" },
-        { "policy": 4, "min": 300000, "max": 8000000, "minEntry": 18, "maxEntry": 60, "minYears": 5,  "maxYa": "70", "maxYb":"40"},
-        { "policy": 5, "min": 200000, "max": 5000000, "minEntry": 18, "maxEntry": 60, "minYears": 5,  "maxYa": "70", "maxYb":"50"},
-        { "policy": 6, "min": 400000, "max": 10000000, "minEntry": 18, "maxEntry": 55, "minYears": 5,  "maxYa": "70", "maxYb":"52"},
-        { "policy": 7, "min": 300000, "max": 9000000, "minEntry": 20, "maxEntry": 60, "minYears": 5,  "maxYa": "70", "maxYb":"50"},
-        { "policy": 8, "min": 250000, "max": 7000000, "minEntry": 20, "maxEntry": 55, "minYears": 5,  "maxYa": "70", "maxYb":"50"},
-        { "policy": 9, "min": 300000, "max": 10000000, "minEntry": 20, "maxEntry": 55, "minYears": 5, "maxYa": "70", "maxYb":"30" },
-        { "policy": 10, "min": 500000, "max": 15000000, "minEntry": 18, "maxEntry": 55, "minYears": 5, "maxYa": "65", "maxYb":"25", "exactTerms": [15, 20, 25] },
-        { "policy": 11, "min": 400000, "max": 12000000, "minEntry": 18, "maxEntry": 55, "minYears": 5, "maxYa": "65", "maxYb":"20", "exactTerms": [15, 20] },
-        { "policy": 12, "min": 600000, "max": 16000000, "minEntry": 18, "maxEntry": 55, "minYears": 10,"maxYa": "65", "maxYb":"25", "exactTerms": [15, 20, 25] },
-        { "policy": 13, "min": 350000, "max": 10000000, "minEntry": 18, "maxEntry": 55, "minYears": 5, "maxYa": "65", "maxYb":"20", "exactTerms": [15, 20] },
-        { "policy": 14, "min": 450000, "max": 13000000, "minEntry": 18, "maxEntry": 55, "minYears": 5, "maxYa": "65", "maxYb":"25", "exactTerms": [15, 20, 25] },
-        { "policy": 15, "min": 500000, "max": 14000000, "minEntry": 18, "maxEntry": 55, "minYears": 5, "maxYa": "65", "maxYb":"20", "exactTerms": [15, 20] },
-        { "policy": 16, "min": 400000, "max": 12000000, "minEntry": 18, "maxEntry": 55, "minYears": 10, "maxYa": "65", "maxYb":"30" },
-        { "policy": 17, "min": 250000, "max": 9000000, "minEntry": 18, "maxEntry": 55, "minYears": 10, "maxYa": "65", "maxYb":"30" },
-        { "policy": 18, "min": 350000, "max": 10000000, "minEntry": 18, "maxEntry": 55, "minYears": 10, "maxYa": "65", "maxYb":"30" },
-        { "policy": 19, "min": 300000, "max": 8500000, "minEntry": 18, "maxEntry": 55, "minYears": 10,"maxYa": "65", "maxYb":"30" },
-        { "policy": 20, "min": 500000, "max": 12000000, "minEntry": 18, "maxEntry": 55, "minYears": 10, "maxYa": "65", "maxYb":"30" },
-        { "policy": 21, "min": 600000, "max": 13000000, "minEntry": 18, "maxEntry": 55, "minYears": 10, "maxYa": "65", "maxYb":"30" }
-    ],
-    "addonIndNames": [
-        {"1": "Accidental Death Benefit"},
-        {"2": "Termrider"},
-        {"3.1": "Critical Illness Payout"},
-        {"3.2": "Critical Illness No Premium Pay"},
-        {"4": "Spouse Rider"},
-        {"5.1": "Disability Payout"},
-        {"5.2": "Disability No Premium Pay"},
-        {"6": "Child Education Rider"},
-        {"7": "Hospital Rider"},
-        {"8": "Time Extension Rider"},
-        {"9": "Funeral Expense Rider"},
-        {"10": "Employment Loss No Premium Rider"},
-        {"11": "Travel Add-on"},
-        {"12": "Premium Return in Term Life"},
-        {"65": "Loan Against Insured Amount"},
-        {"66": "Grace Period for Pay"},
-        {"67": "Discount for Salaried Employees"},
-        {"68": "Online Discount"},
-        {"69": "Free Annual Health Checkup Whole Body"},
-        {"70": "Free Lookup Period"},
-        {"71": "Policy Conversion"}
-    ],
-    "policyAddons":[
-        {"1": [1, 2, 3.1, 5.2, 7, 10, 65, 66, 68, 70]},
-  {"2": [1, 2, 4, 6, 8, 11, 65, 67, 69, 71]},
-  {"3": [1, 2, 3.2, 5.1, 9, 11, 65, 66, 67, 70]},
-  {"4": [1, 2, 4, 7, 8, 10, 65, 68, 69, 71]},
-  {"5": [1, 2, 3.1, 6, 9, 10, 65, 66, 69, 70]},
-  {"6": [1, 2, 5.2, 7, 8, 11, 65, 67, 68, 71]},
-  {"7": [1, 2, 3.2, 6, 8, 10, 65, 66, 67, 69]},
-  {"8": [1, 2, 4, 5.1, 9, 11, 65, 68, 70, 71]},
-  {"9": [1, 2, 3.1, 7, 8, 11, 65, 66, 69, 71]},
-  {"10": [1, 2, 4, 6, 9, 10, 65, 67, 68, 70]},
-  {"11": [1, 2, 3.2, 5.2, 7, 11, 65, 66, 67, 71]},
-  {"12": [1, 2, 4, 6, 8, 9, 65, 68, 69, 70]},
-  {"13": [1, 2, 3.1, 6, 7, 11, 65, 66, 70, 71]},
-  {"14": [1, 2, 4, 5.1, 8, 10, 65, 67, 69, 70]},
-  {"15": [1, 2, 3.2, 6, 9, 10, 65, 66, 68, 71]},
-  {"16": [1, 2, 3.1, 7, 9, 12, 66, 68, 69, 71]},
-  {"17": [1, 2, 4, 8, 11, 12, 67, 68, 70, 71]},
-  {"18": [1, 2, 5.1, 6, 10, 12, 66, 67, 69, 70]},
-  {"19": [1, 2, 3.2, 8, 11, 12, 66, 68, 70, 71]},
-  {"20": [1, 2, 4, 6, 9, 12, 67, 69, 70, 71]},
-  {"21": [1, 2, 5.2, 7, 10, 12, 66, 67, 68, 69]}
-    ],
-    "hardcodedData":[
-        {"Add-on Number": "1","Add-on Name": "Accidental Death Benefit","Costper1k": 1},
-        { "Add-on Number": "2", "Add-on Name": "Termrider", "Costper1k": 5 },
-        {
-          "Add-on Number": "3.1",
-          "Add-on Name": "Critical Illness Payout",
-          "Costper1k": 2
-        },
-        {
-          "Add-on Number": "3.2",
-          "Add-on Name": "Critical Illness No Premium Pay",
-          "Costper1k": 1
-        },
-        { "Add-on Number": "4", "Add-on Name": "Spouse Rider", "Costper1k": 10 },
-        {
-          "Add-on Number": "5.1",
-          "Add-on Name": "Disability Payout",
-          "Costper1k": 2
-        },
-        {
-          "Add-on Number": "5.2",
-          "Add-on Name": "Disability No Premium Pay",
-          "Costper1k": 1
-        },
-        {
-          "Add-on Number": "6",
-          "Add-on Name": "Child Education Rider",
-          "Costper1k": 1
-        },
-        { "Add-on Number": "7", "Add-on Name": "Hospital Rider", "Costper1k": 3 },
-        {
-          "Add-on Number": "8",
-          "Add-on Name": "Time Extension Rider",
-          "Costper1k": 1
-        },
-        {
-          "Add-on Number": "9",
-          "Add-on Name": "Funeral Expense Rider",
-          "Costper1k": 0.25
-        },
-        {
-          "Add-on Number": "10",
-          "Add-on Name": "Employment Loss No Premium Rider",
-          "Costper1k": 10
-        },
-        { "Add-on Number": "11", "Add-on Name": "Travel Add-on", "Costper1k": 5 },
-        {
-          "Add-on Number": "12",
-          "Add-on Name": "Premium Return in Term Life",
-          "Costper1k": 3
-        },
-        {
-          "Add-on Number": "65",
-          "Add-on Name": "Loan Against Insured Amount",
-          "Costper1k": 0
-        },
-        {
-          "Add-on Number": "66",
-          "Add-on Name": "Grace Period for Pay",
-          "Costper1k": 0
-        },
-        {
-          "Add-on Number": "67",
-          "Add-on Name": "Discount for Salaried Employees",
-          "Costper1k": 0
-        },
-        { "Add-on Number": "68", "Add-on Name": "Online Discount", "Costper1k": 0 },
-        {
-          "Add-on Number": "69",
-          "Add-on Name": "Free Annual Health Checkup Whole Body",
-          "Costper1k": 0
-        },
-        {
-          "Add-on Number": "70",
-          "Add-on Name": "Free Lookup Period",
-          "Costper1k": 0
-        },
-        {
-          "Add-on Number": "71",
-          "Add-on Name": "Policy Conversion",
-          "Costper1k": 0
-        }
+  "policies": [
+    {
+      "policy": 1,
+      "min": 200000,
+      "max": 5000000,
+      "minEntry": 18,
+      "maxEntry": 60,
+      "minYears": 5,
+      "maxYa": "70",
+      "maxYb": "52"
+    },
+    {
+      "policy": 2,
+      "min": 300000,
+      "max": 7500000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 5,
+      "maxYa": "70",
+      "maxYb": "50"
+    },
+    {
+      "policy": 3,
+      "min": 250000,
+      "max": 6000000,
+      "minEntry": 18,
+      "maxEntry": 60,
+      "minYears": 5,
+      "maxYa": "70",
+      "maxYb": "45"
+    },
+    {
+      "policy": 4,
+      "min": 300000,
+      "max": 8000000,
+      "minEntry": 18,
+      "maxEntry": 60,
+      "minYears": 5,
+      "maxYa": "70",
+      "maxYb": "40"
+    },
+    {
+      "policy": 5,
+      "min": 200000,
+      "max": 5000000,
+      "minEntry": 18,
+      "maxEntry": 60,
+      "minYears": 5,
+      "maxYa": "70",
+      "maxYb": "50"
+    },
+    {
+      "policy": 6,
+      "min": 400000,
+      "max": 10000000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 5,
+      "maxYa": "70",
+      "maxYb": "52"
+    },
+    {
+      "policy": 7,
+      "min": 300000,
+      "max": 9000000,
+      "minEntry": 20,
+      "maxEntry": 60,
+      "minYears": 5,
+      "maxYa": "70",
+      "maxYb": "50"
+    },
+    {
+      "policy": 8,
+      "min": 250000,
+      "max": 7000000,
+      "minEntry": 20,
+      "maxEntry": 55,
+      "minYears": 5,
+      "maxYa": "70",
+      "maxYb": "50"
+    },
+    {
+      "policy": 9,
+      "min": 300000,
+      "max": 10000000,
+      "minEntry": 20,
+      "maxEntry": 55,
+      "minYears": 5,
+      "maxYa": "70",
+      "maxYb": "30"
+    },
+    {
+      "policy": 10,
+      "min": 500000,
+      "max": 15000000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 5,
+      "maxYa": "65",
+      "maxYb": "25",
+      "exactTerms": [
+        15,
+        20,
+        25
       ]
+    },
+    {
+      "policy": 11,
+      "min": 400000,
+      "max": 12000000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 5,
+      "maxYa": "65",
+      "maxYb": "20",
+      "exactTerms": [
+        15,
+        20
+      ]
+    },
+    {
+      "policy": 12,
+      "min": 600000,
+      "max": 16000000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 10,
+      "maxYa": "65",
+      "maxYb": "25",
+      "exactTerms": [
+        15,
+        20,
+        25
+      ]
+    },
+    {
+      "policy": 13,
+      "min": 350000,
+      "max": 10000000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 5,
+      "maxYa": "65",
+      "maxYb": "20",
+      "exactTerms": [
+        15,
+        20
+      ]
+    },
+    {
+      "policy": 14,
+      "min": 450000,
+      "max": 13000000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 5,
+      "maxYa": "65",
+      "maxYb": "25",
+      "exactTerms": [
+        15,
+        20,
+        25
+      ]
+    },
+    {
+      "policy": 15,
+      "min": 500000,
+      "max": 14000000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 5,
+      "maxYa": "65",
+      "maxYb": "20",
+      "exactTerms": [
+        15,
+        20
+      ]
+    },
+    {
+      "policy": 16,
+      "min": 400000,
+      "max": 12000000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 10,
+      "maxYa": "65",
+      "maxYb": "30"
+    },
+    {
+      "policy": 17,
+      "min": 250000,
+      "max": 9000000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 10,
+      "maxYa": "65",
+      "maxYb": "30"
+    },
+    {
+      "policy": 18,
+      "min": 350000,
+      "max": 10000000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 10,
+      "maxYa": "65",
+      "maxYb": "30"
+    },
+    {
+      "policy": 19,
+      "min": 300000,
+      "max": 8500000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 10,
+      "maxYa": "65",
+      "maxYb": "30"
+    },
+    {
+      "policy": 20,
+      "min": 500000,
+      "max": 12000000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 10,
+      "maxYa": "65",
+      "maxYb": "30"
+    },
+    {
+      "policy": 21,
+      "min": 600000,
+      "max": 13000000,
+      "minEntry": 18,
+      "maxEntry": 55,
+      "minYears": 10,
+      "maxYa": "65",
+      "maxYb": "30"
+    }
+  ],
+  "addonIndNames": [
+    {
+      "1": "Accidental Death Benefit"
+    },
+    {
+      "2": "Termrider"
+    },
+    {
+      "3.1": "Critical Illness Payout"
+    },
+    {
+      "3.2": "Critical Illness No Premium Pay"
+    },
+    {
+      "4": "Spouse Rider"
+    },
+    {
+      "5.1": "Disability Payout"
+    },
+    {
+      "5.2": "Disability No Premium Pay"
+    },
+    {
+      "6": "Child Education Rider"
+    },
+    {
+      "7": "Hospital Rider"
+    },
+    {
+      "8": "Time Extension Rider"
+    },
+    {
+      "9": "Funeral Expense Rider"
+    },
+    {
+      "10": "Employment Loss No Premium Rider"
+    },
+    {
+      "11": "Travel Add-on"
+    },
+    {
+      "12": "Premium Return in Term Life"
+    },
+    {
+      "65": "Loan Against Insured Amount"
+    },
+    {
+      "66": "Grace Period for Pay"
+    },
+    {
+      "67": "Discount for Salaried Employees"
+    },
+    {
+      "68": "Online Discount"
+    },
+    {
+      "69": "Free Annual Health Checkup Whole Body"
+    },
+    {
+      "70": "Free Lookup Period"
+    },
+    {
+      "71": "Policy Conversion"
+    }
+  ],
+  "policyAddons": [
+    {
+      "1": [
+        1,
+        2,
+        3.1,
+        5.2,
+        7,
+        10,
+        65,
+        66,
+        68,
+        70
+      ]
+    },
+    {
+      "2": [
+        1,
+        2,
+        4,
+        6,
+        8,
+        11,
+        65,
+        67,
+        69,
+        71
+      ]
+    },
+    {
+      "3": [
+        1,
+        2,
+        3.2,
+        5.1,
+        9,
+        11,
+        65,
+        66,
+        67,
+        70
+      ]
+    },
+    {
+      "4": [
+        1,
+        2,
+        4,
+        7,
+        8,
+        10,
+        65,
+        68,
+        69,
+        71
+      ]
+    },
+    {
+      "5": [
+        1,
+        2,
+        3.1,
+        6,
+        9,
+        10,
+        65,
+        66,
+        69,
+        70
+      ]
+    },
+    {
+      "6": [
+        1,
+        2,
+        5.2,
+        7,
+        8,
+        11,
+        65,
+        67,
+        68,
+        71
+      ]
+    },
+    {
+      "7": [
+        1,
+        2,
+        3.2,
+        6,
+        8,
+        10,
+        65,
+        66,
+        67,
+        69
+      ]
+    },
+    {
+      "8": [
+        1,
+        2,
+        4,
+        5.1,
+        9,
+        11,
+        65,
+        68,
+        70,
+        71
+      ]
+    },
+    {
+      "9": [
+        1,
+        2,
+        3.1,
+        7,
+        8,
+        11,
+        65,
+        66,
+        69,
+        71
+      ]
+    },
+    {
+      "10": [
+        1,
+        2,
+        4,
+        6,
+        9,
+        10,
+        65,
+        67,
+        68,
+        70
+      ]
+    },
+    {
+      "11": [
+        1,
+        2,
+        3.2,
+        5.2,
+        7,
+        11,
+        65,
+        66,
+        67,
+        71
+      ]
+    },
+    {
+      "12": [
+        1,
+        2,
+        4,
+        6,
+        8,
+        9,
+        65,
+        68,
+        69,
+        70
+      ]
+    },
+    {
+      "13": [
+        1,
+        2,
+        3.1,
+        6,
+        7,
+        11,
+        65,
+        66,
+        70,
+        71
+      ]
+    },
+    {
+      "14": [
+        1,
+        2,
+        4,
+        5.1,
+        8,
+        10,
+        65,
+        67,
+        69,
+        70
+      ]
+    },
+    {
+      "15": [
+        1,
+        2,
+        3.2,
+        6,
+        9,
+        10,
+        65,
+        66,
+        68,
+        71
+      ]
+    },
+    {
+      "16": [
+        1,
+        2,
+        3.1,
+        7,
+        9,
+        12,
+        66,
+        68,
+        69,
+        71
+      ]
+    },
+    {
+      "17": [
+        1,
+        2,
+        4,
+        8,
+        11,
+        12,
+        67,
+        68,
+        70,
+        71
+      ]
+    },
+    {
+      "18": [
+        1,
+        2,
+        5.1,
+        6,
+        10,
+        12,
+        66,
+        67,
+        69,
+        70
+      ]
+    },
+    {
+      "19": [
+        1,
+        2,
+        3.2,
+        8,
+        11,
+        12,
+        66,
+        68,
+        70,
+        71
+      ]
+    },
+    {
+      "20": [
+        1,
+        2,
+        4,
+        6,
+        9,
+        12,
+        67,
+        69,
+        70,
+        71
+      ]
+    },
+    {
+      "21": [
+        1,
+        2,
+        5.2,
+        7,
+        10,
+        12,
+        66,
+        67,
+        68,
+        69
+      ]
+    }
+  ],
+  "hardcodedData": [
+    {
+      "Add-on Number": "1",
+      "Add-on Name": "Accidental Death Benefit",
+      "Costper1k": 1
+    },
+    {
+      "Add-on Number": "2",
+      "Add-on Name": "Termrider",
+      "Costper1k": 5
+    },
+    {
+      "Add-on Number": "3.1",
+      "Add-on Name": "Critical Illness Payout",
+      "Costper1k": 2
+    },
+    {
+      "Add-on Number": "3.2",
+      "Add-on Name": "Critical Illness No Premium Pay",
+      "Costper1k": 1
+    },
+    {
+      "Add-on Number": "4",
+      "Add-on Name": "Spouse Rider",
+      "Costper1k": 10
+    },
+    {
+      "Add-on Number": "5.1",
+      "Add-on Name": "Disability Payout",
+      "Costper1k": 2
+    },
+    {
+      "Add-on Number": "5.2",
+      "Add-on Name": "Disability No Premium Pay",
+      "Costper1k": 1
+    },
+    {
+      "Add-on Number": "6",
+      "Add-on Name": "Child Education Rider",
+      "Costper1k": 1
+    },
+    {
+      "Add-on Number": "7",
+      "Add-on Name": "Hospital Rider",
+      "Costper1k": 3
+    },
+    {
+      "Add-on Number": "8",
+      "Add-on Name": "Time Extension Rider",
+      "Costper1k": 1
+    },
+    {
+      "Add-on Number": "9",
+      "Add-on Name": "Funeral Expense Rider",
+      "Costper1k": 0.25
+    },
+    {
+      "Add-on Number": "10",
+      "Add-on Name": "Employment Loss No Premium Rider",
+      "Costper1k": 10
+    },
+    {
+      "Add-on Number": "11",
+      "Add-on Name": "Travel Add-on",
+      "Costper1k": 5
+    },
+    {
+      "Add-on Number": "12",
+      "Add-on Name": "Premium Return in Term Life",
+      "Costper1k": 3
+    },
+    {
+      "Add-on Number": "65",
+      "Add-on Name": "Loan Against Insured Amount",
+      "Costper1k": 0
+    },
+    {
+      "Add-on Number": "66",
+      "Add-on Name": "Grace Period for Pay",
+      "Costper1k": 0
+    },
+    {
+      "Add-on Number": "67",
+      "Add-on Name": "Discount for Salaried Employees",
+      "Costper1k": 0
+    },
+    {
+      "Add-on Number": "68",
+      "Add-on Name": "Online Discount",
+      "Costper1k": 0
+    },
+    {
+      "Add-on Number": "69",
+      "Add-on Name": "Free Annual Health Checkup Whole Body",
+      "Costper1k": 0
+    },
+    {
+      "Add-on Number": "70",
+      "Add-on Name": "Free Lookup Period",
+      "Costper1k": 0
+    },
+    {
+      "Add-on Number": "71",
+      "Add-on Name": "Policy Conversion",
+      "Costper1k": 0
+    }
+  ],
+  "policyData": [
+    {
+      "policyNumber": 1,
+      "name": "Himalayan Life Endowment Plan",
+      "csr": 88.3
+    },
+    {
+      "policyNumber": 2,
+      "name": "Himalayan Life Bachhat Beema Plan",
+      "csr": 92.1
+    },
+    {
+      "policyNumber": 3,
+      "name": "Himalayan Life Sunaulo Bhabishya Plan",
+      "csr": 86.5
+    },
+    {
+      "policyNumber": 4,
+      "name": "Lic Endowment Plan",
+      "csr": 89.2
+    },
+    {
+      "policyNumber": 5,
+      "name": "Lic Unnat Plan",
+      "csr": 91.4
+    },
+    {
+      "policyNumber": 6,
+      "name": "Lic Sajilo Beema Plan",
+      "csr": 94.0
+    },
+    {
+      "policyNumber": 7,
+      "name": "Nepal Life Endowment Plan",
+      "csr": 87.7
+    },
+    {
+      "policyNumber": 8,
+      "name": "Nepal Life Safalta Plan",
+      "csr": 90.3
+    },
+    {
+      "policyNumber": 9,
+      "name": "Nepal Life Uttam Beema Plan",
+      "csr": 93.5
+    },
+    {
+      "policyNumber": 10,
+      "name": "Himalayan Life Money Back Plan",
+      "csr": 85.6
+    },
+    {
+      "policyNumber": 11,
+      "name": "Himalayan Life Bhabiswa Yojana Plan",
+      "csr": 92.8
+    },
+    {
+      "policyNumber": 12,
+      "name": "Lic Money Back Plan",
+      "csr": 90.9
+    },
+    {
+      "policyNumber": 13,
+      "name": "Lic Bhabishya Plan",
+      "csr": 89.6
+    },
+    {
+      "policyNumber": 14,
+      "name": "Nepal Life Money Back Plan",
+      "csr": 91.1
+    },
+    {
+      "policyNumber": 15,
+      "name": "Nepal Life Samriddhi Plan",
+      "csr": 94.4
+    },
+    {
+      "policyNumber": 16,
+      "name": "Himalayan Life Term Life Plan",
+      "csr": 86.9
+    },
+    {
+      "policyNumber": 17,
+      "name": "Himalayan Life Suraksha Beema Plan",
+      "csr": 93.1
+    },
+    {
+      "policyNumber": 18,
+      "name": "Lic Term Life Plan",
+      "csr": 89.9
+    },
+    {
+      "policyNumber": 19,
+      "name": "Lic Jeevan Suraksha Plan",
+      "csr": 95.0
+    },
+    {
+      "policyNumber": 20,
+      "name": "Nepal Life Term Life Plan",
+      "csr": 87.2
+    },
+    {
+      "policyNumber": 21,
+      "name": "Nepal Life Jeevan Shakti Plan",
+      "csr": 91.7
+    }
+  ],
+  "addonCosts": {
+    "1": 1,
+    "2": 5,
+    "3.1": 2,
+    "3.2": 1,
+    "4": 10,
+    "5.1": 2,
+    "5.2": 1,
+    "6": 1,
+    "7": 3,
+    "8": 1,
+    "9": 0.25,
+    "10": 10,
+    "11": 5,
+    "12": 3,
+    "65": 0,
+    "66": 0,
+    "67": 0,
+    "68": 0,
+    "69": 0,
+    "70": 0,
+    "71": 0
+  }
 }
