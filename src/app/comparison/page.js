@@ -1,4 +1,3 @@
-
 "use client";
 
 import "./page.css";
@@ -16,7 +15,6 @@ import companyPolicies from "/data/companyPolicies.json";
 import paymentMethods from "/data/paymentMethods.json";
 import rebateBrackets from "/data/rebateBrackets.json";
 import policiesData from "/data/Policies.json";
-
 
 const company1Policies = [1, 2, 3, 10, 11, 16, 17];
 const company2Policies = [4, 5, 6, 12, 13, 18, 19];
@@ -185,10 +183,10 @@ export default function Compare() {
   <div className="cardCompanyName">{policy.companyName}</div>
   <div className="cardCSR">CSR: {policy.csr || "N/A"}</div>
   <div className="cardCost">
-    <div className="cardPremiumCost">Premium: {policy.premium || "0"}</div>
+    <div className="cardPremiumCost">Premium: रु {policy.premium || "0"}</div>
   </div>
   <div className="cardCost">
-  <div className="cardAddonCost">AddonCost: {policy.addonCost || "0"}</div>
+  <div className="cardAddonCost">AddonCost: रु {policy.addonCost || "0"}</div>
   </div>
 
  
@@ -418,7 +416,10 @@ export default function Compare() {
                   }
                 })}
               </div>
-              <Calculator income={formData.income} insured_amount={formData.insuredAmount}></Calculator>
+              <a href="/yearslasting" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+  <Calculator income={formData.income} insured_amount={formData.insuredAmount} />
+</a>
+
             </div>
           </div>
         </>

@@ -15,13 +15,12 @@ export default function Calculator({ insured_amount, income }) {
     }
     return (
         <div className="calculatorCard">
-            <div className="yearHeading">
-                Years you are going to last
-            </div>
-            <div className="lastingYear">
-                {year} Years
-            </div>
-
-        </div>
+    <div className="yearHeading">
+      Insured amount covers family expenses for approximately 
+      <span className="lastingYear">{year}  </span> 
+        Years
+    </div>
+    <div className="subDetails">(Click to see how it's calculated)</div>
+  </div>
     )
 }
