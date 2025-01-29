@@ -62,5 +62,4 @@ export default function DataFilter(data) {
   // Log filtered policies to see which are available
 
   return filteredPolicies
-  return "hello"
 }

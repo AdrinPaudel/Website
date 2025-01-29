@@ -6,6 +6,7 @@
     background-color: transparent;
     position: fixed;
     z-index: 9;
+    backdrop-filter: blur(10px);
 }
 #navBar{
     width: 100%;

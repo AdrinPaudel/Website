@@ -28,7 +28,7 @@ export default function Footer(){
 
     const contactInfo=['Bafal, Kathmandu',
         'Locate us Here',
-        '+977-982137877123124124',
+        '+977-9876543210',
         'Click to Email Us',
         'Sun-Fri 9:00AM - 06:00PM']
     const contactInfoArr= contactInfo.map((listText, index) =>{
@@ -77,7 +77,7 @@ export default function Footer(){
             <div id="lowerContent">
                 <span>Visitors are hereby informed that their information submitted on the website may be shared with insurers.Product information is authentic and solely based on the information received from the insurers.</span>
                 <br/>
-                <span>© Copyright 2024-2024 insurancesathinepal.com. All Rights Reserved.</span>
+                <span>© Copyright 2024-2025 insurancesathinepal.com. All Rights Reserved.</span>
             </div>
         </div>
     );
