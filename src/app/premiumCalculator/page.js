@@ -90,7 +90,6 @@ export default function PremiumCalculator() {
   };
 
   return (
-    <div id="outerbox">
     <div id="calculatorContainer">
     <div className="premiumCalculatorContainer">
         <h1>Premium Calculator</h1>
@@ -151,7 +150,6 @@ export default function PremiumCalculator() {
             </ul>
           </div>
         )}
-      </div>
       </div>
       </div>
   );
