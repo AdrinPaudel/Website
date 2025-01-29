@@ -27,7 +27,7 @@
 }
 .logo{
   flex: 1;
-  background-image: url("/logo.png");
+  /* background-image: url("/logo.png"); */
   margin-left: 3vw;
   height: 100%;
   background-size: contain;
@@ -227,4 +227,3 @@
     transform: translateX(-10vh);
   }
 }
-

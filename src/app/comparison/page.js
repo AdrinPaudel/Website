@@ -369,7 +369,7 @@ export default function Compare() {
               <div id="filterinfoicon" onClick={() => window.location.href = '/addonsdetails'}>
                 ⓘ
                 <span id="filterinfo">
-                  Click on a addon to filter the policies
+                  Click here to see addon details
                 </span>
               </div>
               <h3> Free Add-on </h3>

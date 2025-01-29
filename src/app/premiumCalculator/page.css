@@ -1,7 +1,8 @@
 /* Ensure calculator starts below the navbar */
 #calculatorContainer {
-    padding-top: 5rem;
+  padding-top: 7rem;
 }
+
 .premiumCalculatorContainer {
     max-width: 600px;
     margin: 0 auto;
@@ -65,6 +66,3 @@
     font-size: 1rem;
   }
   
-.outerbox{
-  padding-top:100px;
-}

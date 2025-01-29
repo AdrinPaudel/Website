@@ -91,7 +91,7 @@ export default function PremiumCalculator() {
 
   return (
     <div id="calculatorContainer">
-    <div className="premiumCalculatorContainer">
+      <div className="premiumCalculatorContainer">
         <h1>Premium Calculator</h1>
         <div className="formContainer">
           <input
@@ -151,6 +151,6 @@ export default function PremiumCalculator() {
           </div>
         )}
       </div>
-      </div>
+    </div>
   );
 }
