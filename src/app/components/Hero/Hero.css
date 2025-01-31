@@ -96,8 +96,9 @@
   text-decoration: none;
   font-weight: 700;
   font-style: normal;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text; /* For older versions of Chrome & Safari */
+  background-clip: text; /* Standard property */
+  color: transparent; /* Required for background-clip: text to work */
 }
 
 .hero .heroAdvert {
@@ -162,5 +163,4 @@
 
 .heroCarouselItem>img {
   object-fit: cover;
-  opacity: 0.6;
 }

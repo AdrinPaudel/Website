@@ -47,7 +47,7 @@ export default function Nav() {
         <div className="sideNav leftNav">
         <div className="logo">
   <Link href="/">
-    <Image src="/logo.png" alt="Logo" width={200} height={100} priority />
+    <Image src="/logo.png" alt="Logo" width={230} height={100} priority />
   </Link>
 </div>
 
