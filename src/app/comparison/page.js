@@ -6,6 +6,7 @@ import papa from "papaparse";
 import { useEffect, useState } from "react";
 import DataFilter from "./DataFilter";
 import Calculator from "../components/calculator/calculator";
+import {handlePremiumUpdate} from "../api/write2Json"
 import hardcodedData from "/data/hardcodedData.json"; // Adjust the path if needed
 import addonIndNames from "/data/addonIndNames.json"; // Adjust the path if needed
 import policyAddons from "/data/policyAddons";
@@ -143,10 +144,19 @@ export default function Compare() {
         const validPolicies = processedPolicies.filter(Boolean);
   
         // Fetch prediction once
-        const prediction = await runPythonScript("data1");
   
         // Map policies to comparison result
-        const comparisonResult = validPolicies.map((policy) => {
+        const comparisonResult = validPolicies.map(async (policy) => {
+          
+          // await fetch('/api/updatePremium', {
+          //   method: 'POST',
+          //   headers: { 'Content-Type': 'application/json' },
+          //   body: JSON.stringify({ formData, premium: policy.premium }),
+          // });
+      
+      
+          const prediction = await runPythonScript("data1");
+
           const policyDetails = policiesData.policies.find((p) => p.policy === policy.policy);
           const minAmount = policyDetails?.min || "N/A";
           const maxAmount = policyDetails?.max || "N/A";
