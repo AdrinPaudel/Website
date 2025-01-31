@@ -1,7 +1,7 @@
 "use client";
 
 import "./page.css";
-import "../api/runai.js";
+import { runPythonScript } from "../api/runai"; "../api/runai.js";
 import papa from "papaparse";
 import { useEffect, useState } from "react";
 import DataFilter from "./DataFilter";
@@ -22,6 +22,7 @@ const company3Policies = [7, 8, 9, 14, 15, 20, 21];
 
 export default function Compare() {
   const [showComparisonPage, setShowComparisonPage] = useState(true);
+  const [prediction, setPrediction] = useState(0);
 
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [addonData, setAddonData] = useState([]);
@@ -97,58 +98,55 @@ export default function Compare() {
   }, []);
 
   useEffect(() => {
-    console.log(formData);
-
     if (formData.name !== "") {
-      let filteredData = DataFilter(formData);
-
-      // Process each policy
-      filteredData = filteredData
-        .map((policyData) => {
-          const policyNumber = policyData.policy;
-
-          // Check if the policy has all the selected add-ons
-          const hasAllAddons = selectedAddons.every((addon) =>
-            hasAddonForPolicy(policyNumber, parseFloat(addon))
-          );
-
-          if (!hasAllAddons) {
-            return null; // Exclude this policy if it doesn't match the add-ons
-          }
-
-          // Calculate premium and add-on cost for policies that match
-          const premium = calculatePremium(formData, policyNumber);
-          const addoncost = calculateTotalAddonsCost(selectedAddons, formData);
-
-          // Get CSR, Policy Name, and Company Name using functions and mappings
-          const csr = getCsrByPolicyNumber(policyNumber);
-          const policyName = getPolicyNameByPolicyNumber(policyNumber);
-
-          // Determine the company name based on policy number
-          let companyName = "";
-          if (company1Policies.includes(policyNumber)) {
-            companyName = "Himalayan Life";
-          } else if (company2Policies.includes(policyNumber)) {
-            companyName = "Life Insurance Corporation Nepal";
-          } else if (company3Policies.includes(policyNumber)) {
-            companyName = "Nepal Life";
-          }
-
-          return {
-            ...policyData,
-            premium,
-            addonCost: addoncost,
-            csr, // Adding CSR to the policy object
-            policyName, // Adding Policy Name to the policy object
-            companyName, // Adding Company Name to the policy object
-          };
-        })
-        .filter(Boolean); // Remove null entries (policies that don't match)
-
-      // Update the comparison result
-
-      setComparisonResult(
-        filteredData.map((policy, index) => {
+      async function processPolicies() {
+        let filteredData = DataFilter(formData);
+  
+        // Filter and process policies
+        const processedPolicies = await Promise.all(
+          filteredData.map(async (policyData) => {
+            const policyNumber = policyData.policy;
+  
+            // Check if policy matches selected add-ons
+            const hasAllAddons = selectedAddons.every((addon) =>
+              hasAddonForPolicy(policyNumber, parseFloat(addon))
+            );
+  
+            if (!hasAllAddons) return null;
+  
+            // Calculate premium and add-on cost
+            const premium = calculatePremium(formData, policyNumber);
+            const addonCost = calculateTotalAddonsCost(selectedAddons, formData);
+  
+            // Get policy details
+            const csr = getCsrByPolicyNumber(policyNumber);
+            const policyName = getPolicyNameByPolicyNumber(policyNumber);
+            const companyName = company1Policies.includes(policyNumber)
+              ? "Himalayan Life"
+              : company2Policies.includes(policyNumber)
+              ? "Life Insurance Corporation Nepal"
+              : company3Policies.includes(policyNumber)
+              ? "Nepal Life"
+              : "";
+  
+            return {
+              ...policyData,
+              premium,
+              addonCost,
+              csr,
+              policyName,
+              companyName,
+            };
+          })
+        );
+  
+        const validPolicies = processedPolicies.filter(Boolean);
+  
+        // Fetch prediction once
+        const prediction = await runPythonScript("data1");
+  
+        // Map policies to comparison result
+        const comparisonResult = validPolicies.map((policy) => {
           const policyDetails = policiesData.policies.find((p) => p.policy === policy.policy);
           const minAmount = policyDetails?.min || "N/A";
           const maxAmount = policyDetails?.max || "N/A";
@@ -157,11 +155,11 @@ export default function Compare() {
           const minYears = policyDetails?.minYears || "N/A";
           const maxYearsA = policyDetails?.maxYa || "N/A";
           const maxYearsB = policyDetails?.maxYb || "N/A";
-      
-          // Custom description based on policy type
+  
           let policyTypeDetails = "";
           if (policy.policy >= 1 && policy.policy <= 9) {
-            policyTypeDetails = "The return of the money with premium and additional profit is at the end of the term, and the amount depends on the market rate.";
+            policyTypeDetails =
+              "The return of the money with premium and additional profit is at the end of the term, and the amount depends on the market rate.";
           } else if ([10, 12, 14].includes(policy.policy)) {
             policyTypeDetails =
               "This policy returns 15% at 5 years, 25% at 10 years, and 60% at 15 years for a 15-year plan. For 20- and 25-year plans, the return rates adjust accordingly.";
@@ -171,78 +169,50 @@ export default function Compare() {
           } else if (policy.policy >= 16 && policy.policy <= 21) {
             policyTypeDetails = "This is a term life insurance plan with no maturity benefit.";
           }
-      
+  
           return (
-
-
-<div className="filteredPolicies">
-  <h1>
-    {policy.policyName}
-    <span className="cardPolicyId">{policy.policy}</span>
-  </h1>
-  <div className="cardCompanyName">{policy.companyName}</div>
-  <div className="cardCSR">CSR: {policy.csr || "N/A"}</div>
-  <div className="cardCost">
-    <div className="cardPremiumCost">Premium: रु {policy.premium || "0"}</div>
-  </div>
-  <div className="cardCost">
-  <div className="cardAddonCost">AddonCost: रु {policy.addonCost || "0"}</div>
-  </div>
-
- 
-  <h3 className="detailsTitle">Policy Details</h3>
-  <div className="policyDetails hiddenDetails">
-    <p>
-      This {policy.policyName} is offered by {policy.companyName}.
-    </p>
-    <p>
-      The minimum insured amount for this plan is रु{minAmount} with a maximum of रु{maxAmount}.
-    </p>
-    <p>
-      The minimum entry age is {minEntryAge} years with a maximum entry age of {maxEntryAge} years.
-    </p>
-    <p>
-      The policy term ranges from {minYears} years to {maxYearsA} (or {maxYearsB}) years.
-    </p>
-    <p>{policyTypeDetails}</p>
-    <p>
-      This plan can be taken by visiting any closest {policy.companyName} branch or contacting agents of {policy.companyName}.
-    </p>
-  </div>
-
-  {/* Policy Add-ons */}
-  <h3 className="addonsTitle">Policy Add-ons</h3>
-  <div className="cardAddons hiddenAddons">
-    <div className="cardAddonsContent">
-      {policyAddons[policy.policy]?.length > 0 ? (
-        policyAddons[policy.policy].map((element, index) => {
-          if (element < 65) {
-            return (
-              <div key={index} className="addonsNamesPaid">
-                {addonIndNames[element] || "Unknown Add-on"}
+            <div className="filteredPolicies" key={policy.policy}>
+              <h1>
+                {policy.policyName}
+                <span className="cardPolicyId">{policy.policy}</span>
+              </h1>
+              <div className="cardCompanyName">{policy.companyName}</div>
+              <div className="cardCSR">CSR: {policy.csr || "N/A"}</div>
+              <div className="cardCost">
+                <div className="cardPremiumCost">Premium: रु {policy.premium || "0"}</div>
+                <div className="cardAddonCost">AddonCost: रु {policy.addonCost || "0"}</div>
               </div>
-            );
-          } else {
-            return (
-              <div key={index} className="addonsNamesFree">
-                {addonIndNames[element] || "Unknown Add-on"}
+              <div className="cardPred">Prediction is: {prediction}</div>
+              <h3 className="detailsTitle">Policy Details</h3>
+              <div className="policyDetails hiddenDetails">
+                <p>
+                  This {policy.policyName} is offered by {policy.companyName}.
+                </p>
+                <p>
+                  The minimum insured amount for this plan is रु{minAmount} with a maximum of रु{maxAmount}.
+                </p>
+                <p>
+                  The minimum entry age is {minEntryAge} years with a maximum entry age of {maxEntryAge} years.
+                </p>
+                <p>
+                  The policy term ranges from {minYears} years to {maxYearsA} (or {maxYearsB}) years.
+                </p>
+                <p>{policyTypeDetails}</p>
+                <p>
+                  This plan can be taken by visiting any closest {policy.companyName} branch or contacting agents of {policy.companyName}.
+                </p>
               </div>
-            );
-          }
-        })
-      ) : (
-        <div>No Add-ons Available</div>
-      )}
-    </div>
-  </div>
-</div>
+            </div>
           );
-        })
-      );
-      
+        });
+  
+        setComparisonResult(comparisonResult);
+      }
+  
+      processPolicies();
     }
   }, [formData, selectedAddons]);
-
+  
   const handleAddonChange = (event) => {
     const addonNumber = event.target.id;
 
@@ -417,8 +387,8 @@ export default function Compare() {
                 })}
               </div>
               <a href="/yearslasting" style={{ textDecoration: 'none', cursor: 'pointer' }}>
-  <Calculator income={formData.income} insured_amount={formData.insuredAmount} />
-</a>
+                <Calculator income={formData.income} insured_amount={formData.insuredAmount} />
+              </a>
 
             </div>
           </div>
@@ -541,7 +511,6 @@ async function calculatePremium(formData, policyNumber) {
     formData.age,
     formData.insuredTerm
   ); // Brought from the db
-  console.log(tabRate);
   // tabRatePromise.then(val => setTabRate(val))
 
   // Step 2: Get the loading charge using the provided loading charge function
@@ -558,7 +527,7 @@ async function calculatePremium(formData, policyNumber) {
   const premiumPerTerm = premiumBase / formData.term;
 
   // Return both the premium base and total premium with addons
-  return Math.round(premiumPerTerm*100)/100;
+  return Math.round(premiumPerTerm * 100) / 100;
 }
 
 function findTabRateForEndowment(tabRateData, age, insuredTerm) {
@@ -678,7 +647,6 @@ async function fetchTabRateData(policyNumber) {
     const response = await fetch(url);
     const csvData = await response.text();
     const parsedData = papa.parse(csvData, { skipEmptyLines: true });
-    console.log("ParsedData", parsedData);
     return parsedData.data;
   } catch (error) {
     console.error(

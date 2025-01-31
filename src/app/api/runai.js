@@ -4,7 +4,7 @@ import { exec } from "child_process";
 import path from "path";
 export async function runPythonScript(datastr) {
   //clear
-  const pythonScriptPath = path.join(process.cwd(), "AI", "poly2.py");
+  const pythonScriptPath = path.join(process.cwd(), "AI", "poly1.py");
   //clear
   const command = `python3 ${pythonScriptPath} "${datastr}"`;
   console.log(command)

@@ -338,6 +338,17 @@ div.surrounddatafields {
   text-align: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional subtle shadow */
 }
+.cardPred {
+  color: var(--palewhite);
+  padding: 1rem;
+  margin-top: 2rem;
+  margin-left: 1rem;
+  font-weight: bold;
+  border-radius: 1.5vh;
+  display: inline-block;
+  background: linear-gradient(to right, var(--green), var(--secondary), var(--primary));
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2), inset 0 0 2000px var(--secondaryA);
+}
 
 /* Ensure CSR and Company Name are aligned properly */
 .cardCompanyName {
