@@ -70,7 +70,6 @@ export default function ListOfPolicies() {
       <div className="policyPage">
         <div className="policyListContainer">
           <h1>Available Insurance Policies</h1>
-          <p>Select a policy to see details and add-ons.</p>
 
           <div className="policyGrid">
             {filteredPolicies.length > 0 ? (
