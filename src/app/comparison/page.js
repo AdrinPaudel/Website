@@ -3,13 +3,13 @@
 import "./page.css";
 import "../api/runai.js";
 import papa from "papaparse";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, React } from "react";
 import DataFilter from "./DataFilter";
 import Calculator from "../components/calculator/calculator";
-import hardcodedData from "/data/hardcodedData.json"; 
-import addonIndNames from "/data/addonIndNames.json"; 
+import hardcodedData from "/data/hardcodedData.json";
+import addonIndNames from "/data/addonIndNames.json";
 import policyAddons from "/data/policyAddons";
-import policyData from "/data/policyData.json"; 
+import policyData from "/data/policyData.json";
 import addonCosts from "/data/addonCosts.json";
 import companyPolicies from "/data/companyPolicies.json";
 import paymentMethods from "/data/paymentMethods.json";
@@ -114,7 +114,7 @@ export default function Compare() {
       }
     });
   }, [detailsDisplay]);
-  
+
   useEffect(() => {
 
     setAddonData(hardcodedData);
@@ -128,12 +128,12 @@ export default function Compare() {
     if (formData.name !== "") {
       async function processPolicies() {
 
+
         let filteredData = DataFilter(formData);
 
         // Filter and process policies
         const processedPolicies =
           filteredData.map((policyData) => {
-            console.log("looping over policies")
             const policyNumber = policyData.policy;
 
             // Check if policy matches selected add-ons
@@ -161,7 +161,7 @@ export default function Compare() {
             return {
               ...policyData,
               premium,
-              addonCost: addoncost,
+              addonCost: addonCost,
               csr,
               policyName,
               companyName,
@@ -169,75 +169,77 @@ export default function Compare() {
           })
 
 
+        // >>>>>>>>>>>>>>>>>>>>>>>>>>
 
-	      const validPolicies = processedPolicies.filter(Boolean);
+
+        const validPolicies = processedPolicies.filter(Boolean);
 
         // Fetch prediction once
         validData.sort((a, b) => a.premium - b.premium);
 
         // Map policies to comparison result
         // Process policies sequentially instead of parallel
-const comparisonResult = [];
-for (const policy of validPolicies) {
-  const premValue = await policy.premium;
-  console.log(premValue);
+        const comparisonResult = [];
+        for (const policy of validPolicies) {
+          const premValue = await policy.premium;
+          console.log(premValue);
 
-  // Update premium and wait for it to complete
-  await fetch('/api/updatePremium', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ formData, premium: premValue }),
-  });
+          // Update premium and wait for it to complete
+          await fetch('/api/updatePremium', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ formData, premium: premValue }),
+          });
 
-  // Wait for the prediction after updating the premium
-  const floatprediction = parseFloat(await runPythonScript("data1"));
-  // console.log(typeof prediction)
-  const prediction = Number(floatprediction.toFixed(3));
+          // Wait for the prediction after updating the premium
+          const floatprediction = parseFloat(await runPythonScript("data1"));
+          // console.log(typeof prediction)
+          const prediction = Number(floatprediction.toFixed(3));
 
 
-  const policyDetails = policiesData.policies.find((p) => p.policy === policy.policy);
-  const minAmount = policyDetails?.min || "N/A";
-  const maxAmount = policyDetails?.max || "N/A";
-  const minEntryAge = policyDetails?.minEntry || "N/A";
-  const maxEntryAge = policyDetails?.maxEntry || "N/A";
-  const minYears = policyDetails?.minYears || "N/A";
-  const maxYearsA = policyDetails?.maxYa || "N/A";
-  const maxYearsB = policyDetails?.maxYb || "N/A";
+          const policyDetails = policiesData.policies.find((p) => p.policy === policy.policy);
+          const minAmount = policyDetails?.min || "N/A";
+          const maxAmount = policyDetails?.max || "N/A";
+          const minEntryAge = policyDetails?.minEntry || "N/A";
+          const maxEntryAge = policyDetails?.maxEntry || "N/A";
+          const minYears = policyDetails?.minYears || "N/A";
+          const maxYearsA = policyDetails?.maxYa || "N/A";
+          const maxYearsB = policyDetails?.maxYb || "N/A";
 
-  let policyTypeDetails = "";
-  if (policy.policy >= 1 && policy.policy <= 9) {
-    policyTypeDetails =
-      "The return of the money with premium and additional profit is at the end of the term, and the amount depends on the market rate.";
-  } else if ([10, 12, 14].includes(policy.policy)) {
-    policyTypeDetails =
-      "This policy returns 15% at 5 years, 25% at 10 years, and 60% at 15 years for a 15-year plan. For 20- and 25-year plans, the return rates adjust accordingly.";
-  } else if ([11, 13, 15].includes(policy.policy)) {
-    policyTypeDetails =
-      "This policy returns 25% at 5 years, 25% at 10 years, and 50% at 15 years for a 15-year plan. Adjusted percentages for longer plans.";
-  } else if (policy.policy >= 16 && policy.policy <= 21) {
-    policyTypeDetails = "This is a term life insurance plan with no maturity benefit.";
-  }
+          let policyTypeDetails = "";
+          if (policy.policy >= 1 && policy.policy <= 9) {
+            policyTypeDetails =
+              "The return of the money with premium and additional profit is at the end of the term, and the amount depends on the market rate.";
+          } else if ([10, 12, 14].includes(policy.policy)) {
+            policyTypeDetails =
+              "This policy returns 15% at 5 years, 25% at 10 years, and 60% at 15 years for a 15-year plan. For 20- and 25-year plans, the return rates adjust accordingly.";
+          } else if ([11, 13, 15].includes(policy.policy)) {
+            policyTypeDetails =
+              "This policy returns 25% at 5 years, 25% at 10 years, and 50% at 15 years for a 15-year plan. Adjusted percentages for longer plans.";
+          } else if (policy.policy >= 16 && policy.policy <= 21) {
+            policyTypeDetails = "This is a term life insurance plan with no maturity benefit.";
+          }
 
-  comparisonResult.push(
-    <div className="filteredPolicies" key={policy.policy}>
-      <h1>
-        {policy.policyName}
-        <span className="cardPolicyId">{policy.policy}</span>
-      </h1>
-      <div className="cardCompanyName">{policy.companyName}</div>
-      <div className="cardCSR">CSR: {policy.csr || "N/A"}</div>
-      <div className="cardCost">
+          comparisonResult.push(
+            <div className="filteredPolicies" key={policy.policy}>
+              <h1>
+                {policy.policyName}
+                <span className="cardPolicyId">{policy.policy}</span>
+              </h1>
+              <div className="cardCompanyName">{policy.companyName}</div>
+              <div className="cardCSR">CSR: {policy.csr || "N/A"}</div>
+              <div className="cardCost">
                 <div className="cardPremiumCost">
                   Premium: रु {policy.premium || "0"}
                 </div>
-      </div>
+              </div>
               <div className="cardCost">
                 <div className="cardAddonCost">
                   AddonCost: रु {policy.addonCost || "0"}
                 </div>
-      </div>
-      <div className="cardPred">Prediction is: {prediction}</div>
-      <h3
+              </div>
+              <div className="cardPred">Prediction is: {prediction}</div>
+              <h3
                 className="detailsTitle"
                 onClick={() => setDetailsDisplay((prev) => !prev)}
               >
@@ -268,7 +270,7 @@ for (const policy of validPolicies) {
                   {policy.companyName}.
                 </p>
               </div>
-  
+
               {/* Policy Add-ons */}
               <h3
                 className="addonsTitle"
@@ -276,11 +278,8 @@ for (const policy of validPolicies) {
               >
                 Policy Add-ons
               </h3>
-  
-              <div
-                ref={(el) => (policyAddonsRef.current[policy.policy] = el)}
-                className="cardAddons hiddenAddons"
-              >
+
+              <div ref={(el) => (policyAddonsRef.current[policy.policy] = el)} className="cardAddons hiddenAddons">
                 <div className="cardAddonsContent">
                   {policyAddons[policy.policy]?.length > 0 ? (
                     policyAddons[policy.policy].map((element, index) => {
@@ -305,288 +304,199 @@ for (const policy of validPolicies) {
               </div>
             </div>
           );
-        });
+        };
 
-        setComparisonResult(comparisonResult);
-      }
+  setComparisonResult(comparisonResult);
+}
 
-      processPolicies();
+processPolicies();
     }
   }, [formData, selectedAddons]);
-//        const validPolicies = processedPolicies.filter(Boolean);
-//
-//        // Fetch prediction once
-//
-//        // Map policies to comparison result
-//        // Process policies sequentially instead of parallel
-//const comparisonResult = [];
-//for (const policy of validPolicies) {
-//  const premValue = await policy.premium;
-//  console.log(premValue);
-//
-//  // Update premium and wait for it to complete
-//  await fetch('/api/updatePremium', {
-//    method: 'POST',
-//    headers: { 'Content-Type': 'application/json' },
-//    body: JSON.stringify({ formData, premium: premValue }),
-//  });
-//
-//  // Wait for the prediction after updating the premium
-//  const floatprediction = parseFloat(await runPythonScript("data1"));
-//  // console.log(typeof prediction)
-//  const prediction = Number(floatprediction.toFixed(3));
-//
-//
-//  const policyDetails = policiesData.policies.find((p) => p.policy === policy.policy);
-//  const minAmount = policyDetails?.min || "N/A";
-//  const maxAmount = policyDetails?.max || "N/A";
-//  const minEntryAge = policyDetails?.minEntry || "N/A";
-//  const maxEntryAge = policyDetails?.maxEntry || "N/A";
-//  const minYears = policyDetails?.minYears || "N/A";
-//  const maxYearsA = policyDetails?.maxYa || "N/A";
-//  const maxYearsB = policyDetails?.maxYb || "N/A";
-//
-//  let policyTypeDetails = "";
-//  if (policy.policy >= 1 && policy.policy <= 9) {
-//    policyTypeDetails =
-//      "The return of the money with premium and additional profit is at the end of the term, and the amount depends on the market rate.";
-//  } else if ([10, 12, 14].includes(policy.policy)) {
-//    policyTypeDetails =
-//      "This policy returns 15% at 5 years, 25% at 10 years, and 60% at 15 years for a 15-year plan. For 20- and 25-year plans, the return rates adjust accordingly.";
-//  } else if ([11, 13, 15].includes(policy.policy)) {
-//    policyTypeDetails =
-//      "This policy returns 25% at 5 years, 25% at 10 years, and 50% at 15 years for a 15-year plan. Adjusted percentages for longer plans.";
-//  } else if (policy.policy >= 16 && policy.policy <= 21) {
-//    policyTypeDetails = "This is a term life insurance plan with no maturity benefit.";
-//  }
-//
-//  comparisonResult.push(
-//    <div className="filteredPolicies" key={policy.policy}>
-//      <h1>
-//        {policy.policyName}
-//        <span className="cardPolicyId">{policy.policy}</span>
-//      </h1>
-//      <div className="cardCompanyName">{policy.companyName}</div>
-//      <div className="cardCSR">CSR: {policy.csr || "N/A"}</div>
-//      <div className="cardCost">
-//        <div className="cardPremiumCost">Premium: रु {policy.premium || "0"}</div>
-//        <div className="cardAddonCost">AddonCost: रु {policy.addonCost || "0"}</div>
-//      </div>
-//      <div className="cardPred">Prediction is: {prediction}</div>
-//      <h3 className="detailsTitle">Policy Details</h3>
-//      <div className="policyDetails hiddenDetails">
-//        <p>
-//          This {policy.policyName} is offered by {policy.companyName}.
-//        </p>
-//        <p>
-//          The minimum insured amount for this plan is रु{minAmount} with a maximum of रु{maxAmount}.
-//        </p>
-//        <p>
-//          The minimum entry age is {minEntryAge} years with a maximum entry age of {maxEntryAge} years.
-//        </p>
-//        <p>
-//          The policy term ranges from {minYears} years to {maxYearsA} (or {maxYearsB}) years.
-//        </p>
-//        <p>{policyTypeDetails}</p>
-//        <p>
-//          This plan can be taken by visiting any closest {policy.companyName} branch or contacting agents of {policy.companyName}.
-//        </p>
-//      </div>
-//    </div>
-//  );
-//}
-//
-//        setComparisonResult(comparisonResult);
-//      }
-//
-//      processPolicies();
-//    }
-//  }, [formData, selectedAddons]);
-//>>>>>>> 37aff56 (To fix the stuff)
+// >>>>>>> 37aff56 (To fix the stuff)
 
-  const handleAddonChange = (event) => {
-    const addonNumber = event.target.id;
+const handleAddonChange = (event) => {
+  const addonNumber = event.target.id;
 
-    // If checkbox is checked, add to array; if unchecked, remove from array
-    setSelectedAddons((prevSelectedAddons) =>
-      event.target.checked
-        ? [...prevSelectedAddons, addonNumber]
-        : prevSelectedAddons.filter((addon) => addon !== addonNumber)
-    );
-  };
-
-  // start where not to change
-  return (
-    <>
-      {showComparisonPage ? (
-        <div id="compareContainer">
-          <div className="compareContents" id="searchPlans">
-            <h1>
-              <span id="searchSpan">Search</span>
-              <span id="planSpan">Plans</span>
-            </h1>
-            <p className="fattext">
-              Choosing the right plan can be a crucial decision for your needs,
-              whether you’re an individual, a small business, or a large
-              enterprise. To help you make the best choice, we’ve outlined the
-              key features and benefits of each of our plans below. Compare and
-              select the plan that suits you best.
-            </p>
-          </div>
-
-          <div className="surrounddatafields">
-            <form className="compareContents" id="endowmentdatafields">
-              <div id="datafieldLeft">
-                <input
-                  type="text"
-                  placeholder="Name"
-                  id="nameField"
-                  className="optional"
-                />
-                <input
-                  type="text"
-                  placeholder="Insured Term"
-                  id="insuredTermField"
-                />
-                <input
-                  type="text"
-                  placeholder="Insured Amount"
-                  id="insuredAmmountField"
-                />
-                <input type="text" placeholder="Income" id="incomeField" />
-                <input
-                  type="text"
-                  placeholder="Phone Number(optional)"
-                  id="phoneField"
-                  className="optional"
-                />
-              </div>
-              <div id="datafieldRight">
-                <span id="gender">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="Male"
-                    className="optional"
-                  />{" "}
-                  Male
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="Female"
-                    className="optional"
-                  />{" "}
-                  Female
-                </span>
-                <span id="type">
-                  <input type="radio" name="type" value="1" /> Endowment
-                  <input type="radio" name="type" value="3" /> Term Life
-                  <input type="radio" name="type" value="2" /> Money Back
-                  <input type="radio" name="type" value="0" /> All
-                </span>
-
-                <span id="term">
-                  <input type="radio" name="term" value="0.083" /> Monthly
-                  <input type="radio" name="term" value="0.25" /> Quarterly
-                  <input type="radio" name="term" value="0.5" /> Half-Yearly
-                  <input
-                    id="preselect"
-                    type="radio"
-                    name="term"
-                    value="1"
-                    aria-checked="true"
-                  />{" "}
-                  Yearly
-                </span>
-                <input type="text" placeholder="Age" id="ageField" />
-                <input
-                  type="text"
-                  placeholder="Occupation(optional)"
-                  id="occupationField"
-                  className="optional"
-                />
-                <button
-                  className="mainButton"
-                  onClick={handleButtonClick}
-                  type="button"
-                >
-                  Compare
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <div id="chooseBreak"></div>
-        </div>
-      ) : (
-        <>
-          <div className="comparisonView">
-            {
-              // POLICY FILTERED CARD
-            }
-            <div id="policyCards">{comparisonResult}</div>
-            <div id="majorView">
-              <h1> Choose an Add-on </h1>
-              <div id="filterinfoicon" onClick={() => window.location.href = '/addonsdetails'}>
-                ⓘ
-                <span id="filterinfo">
-                  Click here to see addon details
-                </span>
-              </div>
-              <h3> Free Add-on </h3>
-              <div id="filterFree" className="filter">
-                {addonData.map((addon, index) => {
-                  if (
-                    addon["Add-on Number"] > 60
-                  ) {
-                    return (
-                      <div key={index} className="filterAddons">
-                        <input
-                          type="checkbox"
-                          name={addon["Add-on Name"]}
-                          id={addon["Add-on Number"]}
-                          onChange={handleAddonChange}
-                        />
-                        <label htmlFor={addon["Add-on Number"]}>
-                          {addon["Add-on Name"]}
-                        </label>
-                      </div>
-                    );
-                  }
-                })}
-              </div>
-              <h3> Paid Add-on </h3>
-              <div id="filterFree" className="filter">
-                {addonData.map((addon, index) => {
-                  if (
-                    addon["Add-on Number"] < 64
-                  ) {
-                    return (
-                      <div key={index} className="filterAddons">
-                        <input
-                          type="checkbox"
-                          name={addon["Add-on Name"]}
-                          id={addon["Add-on Number"]}
-                          onChange={handleAddonChange}
-                        />
-                        <label htmlFor={addon["Add-on Number"]}>
-                          {addon["Add-on Name"]}
-                        </label>
-                      </div>
-                    );
-                  }
-                })}
-              </div>
-              <a href="/yearslasting" style={{ textDecoration: 'none', cursor: 'pointer' }}>
-  <Calculator income={formData.income} insured_amount={formData.insuredAmount} />
-</a>
-
-            </div>
-          </div>
-        </>
-      )}
-    </>
+  // If checkbox is checked, add to array; if unchecked, remove from array
+  setSelectedAddons((prevSelectedAddons) =>
+    event.target.checked
+      ? [...prevSelectedAddons, addonNumber]
+      : prevSelectedAddons.filter((addon) => addon !== addonNumber)
   );
+};
+
+// start where not to change
+return (
+  <>
+    {showComparisonPage ? (
+      <div id="compareContainer">
+        <div className="compareContents" id="searchPlans">
+          <h1>
+            <span id="searchSpan">Search</span>
+            <span id="planSpan">Plans</span>
+          </h1>
+          <p className="fattext">
+            Choosing the right plan can be a crucial decision for your needs,
+            whether you’re an individual, a small business, or a large
+            enterprise. To help you make the best choice, we’ve outlined the
+            key features and benefits of each of our plans below. Compare and
+            select the plan that suits you best.
+          </p>
+        </div>
+
+        <div className="surrounddatafields">
+          <form className="compareContents" id="endowmentdatafields">
+            <div id="datafieldLeft">
+              <input
+                type="text"
+                placeholder="Name"
+                id="nameField"
+                className="optional"
+              />
+              <input
+                type="text"
+                placeholder="Insured Term"
+                id="insuredTermField"
+              />
+              <input
+                type="text"
+                placeholder="Insured Amount"
+                id="insuredAmmountField"
+              />
+              <input type="text" placeholder="Income" id="incomeField" />
+              <input
+                type="text"
+                placeholder="Phone Number(optional)"
+                id="phoneField"
+                className="optional"
+              />
+            </div>
+            <div id="datafieldRight">
+              <span id="gender">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="Male"
+                  className="optional"
+                />{" "}
+                Male
+                <input
+                  type="radio"
+                  name="gender"
+                  value="Female"
+                  className="optional"
+                />{" "}
+                Female
+              </span>
+              <span id="type">
+                <input type="radio" name="type" value="1" /> Endowment
+                <input type="radio" name="type" value="3" /> Term Life
+                <input type="radio" name="type" value="2" /> Money Back
+                <input type="radio" name="type" value="0" /> All
+              </span>
+
+              <span id="term">
+                <input type="radio" name="term" value="0.083" /> Monthly
+                <input type="radio" name="term" value="0.25" /> Quarterly
+                <input type="radio" name="term" value="0.5" /> Half-Yearly
+                <input
+                  id="preselect"
+                  type="radio"
+                  name="term"
+                  value="1"
+                  aria-checked="true"
+                />{" "}
+                Yearly
+              </span>
+              <input type="text" placeholder="Age" id="ageField" />
+              <input
+                type="text"
+                placeholder="Occupation(optional)"
+                id="occupationField"
+                className="optional"
+              />
+              <button
+                className="mainButton"
+                onClick={handleButtonClick}
+                type="button"
+              >
+                Compare
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div id="chooseBreak"></div>
+      </div>
+    ) : (
+      <>
+        <div className="comparisonView">
+          {
+            // POLICY FILTERED CARD
+          }
+          <div id="policyCards">{comparisonResult}</div>
+          <div id="majorView">
+            <h1> Choose an Add-on </h1>
+            <div id="filterinfoicon" onClick={() => window.location.href = '/addonsdetails'}>
+              ⓘ
+              <span id="filterinfo">
+                Click here to see addon details
+              </span>
+            </div>
+            <h3> Free Add-on </h3>
+            <div id="filterFree" className="filter">
+              {addonData.map((addon, index) => {
+                if (
+                  addon["Add-on Number"] > 60
+                ) {
+                  return (
+                    <div key={index} className="filterAddons">
+                      <input
+                        type="checkbox"
+                        name={addon["Add-on Name"]}
+                        id={addon["Add-on Number"]}
+                        onChange={handleAddonChange}
+                      />
+                      <label htmlFor={addon["Add-on Number"]}>
+                        {addon["Add-on Name"]}
+                      </label>
+                    </div>
+                  );
+                }
+              })}
+            </div>
+            <h3> Paid Add-on </h3>
+            <div id="filterFree" className="filter">
+              {addonData.map((addon, index) => {
+                if (
+                  addon["Add-on Number"] < 64
+                ) {
+                  return (
+                    <div key={index} className="filterAddons">
+                      <input
+                        type="checkbox"
+                        name={addon["Add-on Name"]}
+                        id={addon["Add-on Number"]}
+                        onChange={handleAddonChange}
+                      />
+                      <label htmlFor={addon["Add-on Number"]}>
+                        {addon["Add-on Name"]}
+                      </label>
+                    </div>
+                  );
+                }
+              })}
+            </div>
+            <a href="/yearslasting" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+              <Calculator income={formData.income} insured_amount={formData.insuredAmount} />
+            </a>
+
+          </div>
+        </div>
+      </>
+    )}
+  </>
+);
 }
 
 function calculateLoadingCharge(policyNumber, formData) {
@@ -718,7 +628,7 @@ async function calculatePremium(formData, policyNumber) {
   const premiumPerTerm = premiumBase / formData.term;
 
   // Return both the premium base and total premium with addons
-  return Math.round(premiumPerTerm*100)/100;
+  return Math.round(premiumPerTerm * 100) / 100;
 }
 
 function findTabRateForEndowment(tabRateData, age, insuredTerm) {
