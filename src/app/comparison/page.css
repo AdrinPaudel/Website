@@ -214,12 +214,6 @@ div.surrounddatafields {
   transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
 }
 
-.detailsTitle:hover + .hiddenDetails,
-.addonsTitle:hover + .hiddenAddons {
-  display: block;
-  opacity: 1;
-}
-
 .filteredPolicies {
   margin: 0.2vw;
   padding: 3vw;
@@ -245,23 +239,18 @@ div.surrounddatafields {
   transition: 0.2s ease;
 }
 
-.cardAddons:hover .cardAddonsContent {
-  height: auto;
-  padding: 2vw;
-}
-
 .cardAddonsContent {
-  height: 0;
+  height: fit-content;
   border-radius: 1vw;
   transition: 0.3s ease;
   overflow: hidden;
   position: relative;
 }
 
-.filteredPolicies:hover .cardAddonsContent {
+/* .filteredPolicies:hover .cardAddonsContent {
   height: auto;
   overflow: visible;
-}
+} */
 
 
 #policyCards {
@@ -311,21 +300,6 @@ div.surrounddatafields {
   height: auto;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Add oval background for Company Name, CSR, and Cost */
 .cardCompanyName,
 .cardCSR,
 .cardCost {
@@ -337,17 +311,6 @@ div.surrounddatafields {
   font-weight: bold;
   text-align: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional subtle shadow */
-}
-.cardPred {
-  color: var(--palewhite);
-  padding: 1rem;
-  margin-top: 2rem;
-  margin-left: 1rem;
-  font-weight: bold;
-  border-radius: 1.5vh;
-  display: inline-block;
-  background: linear-gradient(to right, var(--green), var(--secondary), var(--primary));
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2), inset 0 0 2000px var(--secondaryA);
 }
 
 /* Ensure CSR and Company Name are aligned properly */
@@ -367,3 +330,14 @@ div.surrounddatafields {
   color: var(--palewhite);
 }
 
+
+
+.addonsTitle:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.detailsTitle:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}

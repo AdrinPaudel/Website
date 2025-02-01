@@ -1,17 +1,16 @@
 "use client";
 
 import "./page.css";
-import { runPythonScript } from "../api/runai"; "../api/runai.js";
+import "../api/runai.js";
 import papa from "papaparse";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import DataFilter from "./DataFilter";
 import Calculator from "../components/calculator/calculator";
-import {handlePremiumUpdate} from "../api/write2Json"
-import hardcodedData from "/data/hardcodedData.json"; // Adjust the path if needed
-import addonIndNames from "/data/addonIndNames.json"; // Adjust the path if needed
+import hardcodedData from "/data/hardcodedData.json"; 
+import addonIndNames from "/data/addonIndNames.json"; 
 import policyAddons from "/data/policyAddons";
-import policyData from "/data/policyData.json"; // Adjust the path if needed
-import addonCosts from "/data/addonCosts.json"; // Adjust the path if needed
+import policyData from "/data/policyData.json"; 
+import addonCosts from "/data/addonCosts.json";
 import companyPolicies from "/data/companyPolicies.json";
 import paymentMethods from "/data/paymentMethods.json";
 import rebateBrackets from "/data/rebateBrackets.json";
@@ -23,11 +22,14 @@ const company3Policies = [7, 8, 9, 14, 15, 20, 21];
 
 export default function Compare() {
   const [showComparisonPage, setShowComparisonPage] = useState(true);
-  const [prediction, setPrediction] = useState(0);
-
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [addonData, setAddonData] = useState([]);
   const [comparisonResult, setComparisonResult] = useState([]);
+  let [addonDisplay, setAddonDisplay] = useState(false);
+  let [detailsDisplay, setDetailsDisplay] = useState(false);
+  const policyAddonsRef = useRef({})
+  const policyDetailsRef = useRef({})
+
 
   function handleButtonClick(_) {
     setShowComparisonPage(!showComparisonPage);
@@ -39,7 +41,7 @@ export default function Compare() {
     age: "",
     insuredAmount: "",
     income: "",
-    // type: "",
+    // type: "",.
     // gender: "",
     // phoneNumber: "",
     // dob: "",
@@ -89,7 +91,29 @@ export default function Compare() {
       });
     }
   }
-
+  useEffect(() => {
+    Object.keys(policyAddonsRef.current).forEach(policyKey => {
+      if (policyAddonsRef.current[policyKey]) {
+        if (addonDisplay) {
+          policyAddonsRef.current[policyKey].classList.remove("hiddenAddons");
+        } else {
+          policyAddonsRef.current[policyKey].classList.add("hiddenAddons");
+        }
+      }
+    });
+  }, [addonDisplay]);
+  useEffect(() => {
+    Object.keys(policyDetailsRef.current).forEach(policyKey => {
+      if (policyDetailsRef.current[policyKey]) {
+        if (detailsDisplay) {
+          policyDetailsRef.current[policyKey].classList.remove("hiddenDetails");
+        } else {
+          policyDetailsRef.current[policyKey].classList.add("hiddenDetails");
+        }
+      }
+    });
+  }, [detailsDisplay]);
+  
   useEffect(() => {
 
     setAddonData(hardcodedData);
@@ -99,41 +123,48 @@ export default function Compare() {
   }, []);
 
   useEffect(() => {
+    // Only run when formData is available
     if (formData.name !== "") {
       async function processPolicies() {
+        // Get the filtered policies (synchronously from DataFilter)
         let filteredData = DataFilter(formData);
   
-        // Filter and process policies
-        const processedPolicies = await Promise.all(
+        // Process each policy asynchronously
+        const processedData = await Promise.all(
           filteredData.map(async (policyData) => {
             const policyNumber = policyData.policy;
   
-            // Check if policy matches selected add-ons
+            // Check if the policy has all the selected add-ons
             const hasAllAddons = selectedAddons.every((addon) =>
               hasAddonForPolicy(policyNumber, parseFloat(addon))
             );
+            if (!hasAllAddons) {
+              return null; // Exclude this policy if it doesn't match the add-ons
+            }
   
-            if (!hasAllAddons) return null;
+            // Calculate premium asynchronously
+            const premium = await calculatePremium(formData, policyNumber);
+            // Calculate add-on cost synchronously
+            const addoncost = calculateTotalAddonsCost(selectedAddons, formData);
   
-            // Calculate premium and add-on cost
-            const premium = calculatePremium(formData, policyNumber);
-            const addonCost = calculateTotalAddonsCost(selectedAddons, formData);
-  
-            // Get policy details
+            // Get CSR, Policy Name, and Company Name
             const csr = getCsrByPolicyNumber(policyNumber);
             const policyName = getPolicyNameByPolicyNumber(policyNumber);
-            const companyName = company1Policies.includes(policyNumber)
-              ? "Himalayan Life"
-              : company2Policies.includes(policyNumber)
-              ? "Life Insurance Corporation Nepal"
-              : company3Policies.includes(policyNumber)
-              ? "Nepal Life"
-              : "";
+  
+            // Determine the company name based on policy number
+            let companyName = "";
+            if (company1Policies.includes(policyNumber)) {
+              companyName = "Himalayan Life";
+            } else if (company2Policies.includes(policyNumber)) {
+              companyName = "LIC Nepal";
+            } else if (company3Policies.includes(policyNumber)) {
+              companyName = "Nepal Life";
+            }
   
             return {
               ...policyData,
               premium,
-              addonCost,
+              addonCost: addoncost,
               csr,
               policyName,
               companyName,
@@ -141,23 +172,18 @@ export default function Compare() {
           })
         );
   
-        const validPolicies = processedPolicies.filter(Boolean);
+        // Filter out any null entries
+        const validData = processedData.filter(Boolean);
   
-        // Fetch prediction once
+        // Sort the policies by premium amount in ascending order (lower premium first)
+        validData.sort((a, b) => a.premium - b.premium);
   
-        // Map policies to comparison result
-        const comparisonResult = validPolicies.map(async (policy) => {
-          
-          // await fetch('/api/updatePremium', {
-          //   method: 'POST',
-          //   headers: { 'Content-Type': 'application/json' },
-          //   body: JSON.stringify({ formData, premium: policy.premium }),
-          // });
-      
-      
-          const prediction = await runPythonScript("data1");
-
-          const policyDetails = policiesData.policies.find((p) => p.policy === policy.policy);
+        // Now create the JSX elements
+        const policyCards = validData.map((policy, index) => {
+          // Get additional details from policiesData
+          const policyDetails = policiesData.policies.find(
+            (p) => p.policy === policy.policy
+          );
           const minAmount = policyDetails?.min || "N/A";
           const maxAmount = policyDetails?.max || "N/A";
           const minEntryAge = policyDetails?.minEntry || "N/A";
@@ -166,6 +192,7 @@ export default function Compare() {
           const maxYearsA = policyDetails?.maxYa || "N/A";
           const maxYearsB = policyDetails?.maxYb || "N/A";
   
+          // Create a description based on policy type
           let policyTypeDetails = "";
           if (policy.policy >= 1 && policy.policy <= 9) {
             policyTypeDetails =
@@ -181,7 +208,7 @@ export default function Compare() {
           }
   
           return (
-            <div className="filteredPolicies" key={policy.policy}>
+            <div key={index} className="filteredPolicies">
               <h1>
                 {policy.policyName}
                 <span className="cardPolicyId">{policy.policy}</span>
@@ -189,40 +216,98 @@ export default function Compare() {
               <div className="cardCompanyName">{policy.companyName}</div>
               <div className="cardCSR">CSR: {policy.csr || "N/A"}</div>
               <div className="cardCost">
-                <div className="cardPremiumCost">Premium: रु {policy.premium || "0"}</div>
-                <div className="cardAddonCost">AddonCost: रु {policy.addonCost || "0"}</div>
+                <div className="cardPremiumCost">
+                  Premium: रु {policy.premium || "0"}
+                </div>
               </div>
-              <div className="cardPred">Prediction is: {prediction}</div>
-              <h3 className="detailsTitle">Policy Details</h3>
-              <div className="policyDetails hiddenDetails">
+              <div className="cardCost">
+                <div className="cardAddonCost">
+                  AddonCost: रु {policy.addonCost || "0"}
+                </div>
+              </div>
+  
+              <h3
+                className="detailsTitle"
+                onClick={() => setDetailsDisplay((prev) => !prev)}
+              >
+                Policy Details
+              </h3>
+              <div
+                ref={(el) => (policyDetailsRef.current[policy.policy] = el)}
+                className="policyDetails hiddenDetails"
+              >
                 <p>
                   This {policy.policyName} is offered by {policy.companyName}.
                 </p>
                 <p>
-                  The minimum insured amount for this plan is रु{minAmount} with a maximum of रु{maxAmount}.
+                  The minimum insured amount for this plan is रु{minAmount} with a
+                  maximum of रु{maxAmount}.
                 </p>
                 <p>
-                  The minimum entry age is {minEntryAge} years with a maximum entry age of {maxEntryAge} years.
+                  The minimum entry age is {minEntryAge} years with a maximum entry
+                  age of {maxEntryAge} years.
                 </p>
                 <p>
-                  The policy term ranges from {minYears} years to {maxYearsA} (or {maxYearsB}) years.
+                  The policy term ranges from {minYears} years to {maxYearsA} (or{" "}
+                  {maxYearsB}) years.
                 </p>
                 <p>{policyTypeDetails}</p>
                 <p>
-                  This plan can be taken by visiting any closest {policy.companyName} branch or contacting agents of {policy.companyName}.
+                  This plan can be taken by visiting any closest{" "}
+                  {policy.companyName} branch or contacting agents of{" "}
+                  {policy.companyName}.
                 </p>
+              </div>
+  
+              {/* Policy Add-ons */}
+              <h3
+                className="addonsTitle"
+                onClick={() => setAddonDisplay((prev) => !prev)}
+              >
+                Policy Add-ons
+              </h3>
+  
+              <div
+                ref={(el) => (policyAddonsRef.current[policy.policy] = el)}
+                className="cardAddons hiddenAddons"
+              >
+                <div className="cardAddonsContent">
+                  {policyAddons[policy.policy]?.length > 0 ? (
+                    policyAddons[policy.policy].map((element, index) => {
+                      if (element < 65) {
+                        return (
+                          <div key={index} className="addonsNamesPaid">
+                            {addonIndNames[element] || "Unknown Add-on"}
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <div key={index} className="addonsNamesFree">
+                            {addonIndNames[element] || "Unknown Add-on"}
+                          </div>
+                        );
+                      }
+                    })
+                  ) : (
+                    <div>No Add-ons Available</div>
+                  )}
+                </div>
               </div>
             </div>
           );
         });
   
-        setComparisonResult(comparisonResult);
+        // Finally, update the state with the sorted and processed policy cards
+        setComparisonResult(policyCards);
       }
   
+      // Call the async function
       processPolicies();
     }
   }, [formData, selectedAddons]);
   
+  
+
   const handleAddonChange = (event) => {
     const addonNumber = event.target.id;
 
@@ -397,8 +482,8 @@ export default function Compare() {
                 })}
               </div>
               <a href="/yearslasting" style={{ textDecoration: 'none', cursor: 'pointer' }}>
-                <Calculator income={formData.income} insured_amount={formData.insuredAmount} />
-              </a>
+  <Calculator income={formData.income} insured_amount={formData.insuredAmount} />
+</a>
 
             </div>
           </div>
@@ -537,7 +622,7 @@ async function calculatePremium(formData, policyNumber) {
   const premiumPerTerm = premiumBase / formData.term;
 
   // Return both the premium base and total premium with addons
-  return Math.round(premiumPerTerm * 100) / 100;
+  return Math.round(premiumPerTerm*100)/100;
 }
 
 function findTabRateForEndowment(tabRateData, age, insuredTerm) {

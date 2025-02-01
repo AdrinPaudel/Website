@@ -20,8 +20,8 @@ export default function Footer() {
 
   const otherList = [
     { text: "About Us", link: "/aboutUs" },
-    { text: "Privacy Policy", link: "/privacyPolicy" },
-    { text: "Terms and Conditions", link: "/termsAndConditions" }
+    { text: "Privacy Policy", link: "/privacypolicy" },
+    { text: "Terms and Conditions", link: "/termsandconditions" }
   ];
 
   const otherListArr = otherList.map((item, index) => (

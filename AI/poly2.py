@@ -1,53 +1,52 @@
 # train_model.py
 import pandas as pd
+import json
+import sys
 import numpy as np
 from sklearn.preprocessing import StandardScaler, PolynomialFeatures
-from sklearn.linear_model import Ridge
-from joblib import dump
+from sklearn.linear_model import LinearRegression
+dataFeatures = sys.argv[1]
+try:
+    with open('AI/data/userData.json', 'r') as file:
+        jsondata = json.load(file)
+except Exception as e:
+    print(f'failed to read file : {e}')
+# Lad the data
 
-def load_and_preprocess_data(csv_path):
-    # Read and preprocess data
-    data = pd.read_csv(csv_path)
-    
-    # Map categorical features
-    payment_type_map = {'yearly': 1.0, 'half_yearly': 0.5, 'quarterly': 0.25, 'monthly': 0.083}
-    insurance_type_map = {'Endowment': 1.0}
-    
-    data['Payment Type'] = data['Payment Type'].map(payment_type_map)
-    data['Insurance Type'] = data['Insurance Type'].map(insurance_type_map)
-    
-    # Separate features and target
-    features = ['Age', 'Income', 'Insurance Type', 'Premium Amount',
-                'Insured Years', 'Payment Type', 'Insured Amount']
-    X = data[features]
-    y = data['Percentage of Payment']
-    
-    return X, y
+data = pd.read_csv('AI/data.csv')
 
-def train_and_save_model(csv_path, model_dir='models/'):
-    # Create models directory if it doesn't exist
-    import os
-    os.makedirs(model_dir, exist_ok=True)
-    
-    # Load and preprocess data
-    X, y = load_and_preprocess_data(csv_path)
-    
-    # Initialize transformers and model
-    scaler = StandardScaler()
-    poly = PolynomialFeatures(degree=2, include_bias=False)
-    model = Ridge(alpha=1.0)
-    
-    # Fit transformers and model
-    X_scaled = scaler.fit_transform(X)
-    X_poly = poly.fit_transform(X_scaled)
-    model.fit(X_poly, y)
-    
-    # Save transformers and model
-    dump(scaler, f'{model_dir}scaler.joblib')
-    dump(poly, f'{model_dir}poly.joblib')
-    dump(model, f'{model_dir}model.joblib')
-    
-    print("Model and transformers saved successfully!")
+# # Select features
+featuresarr = ['Age','Income','Insurance Type','Premium Amount','Insured Years','Payment Type','Insured Amount','Percentage of Payment']
+features = [feature for feature in featuresarr if feature in jsondata[dataFeatures]]
 
-if __name__ == "__main__":
-    train_and_save_model('./data.csv')
+payment_type = {
+        'yearly':1.0,
+        'half_yearly': 0.5,
+        'quarterly': 0.25,  
+        'monthly': 0.083
+        }
+data['Payment Type'] = data['Payment Type'].map(payment_type)
+
+X = data[features[:-1]].values  
+y = data['Percentage of Payment'].values   
+# Scale the features
+scaler_x = StandardScaler()
+X_scaled = scaler_x.fit_transform(X)
+# Create polynomial features and fit model
+poly_features = PolynomialFeatures(degree=2)
+X_poly = poly_features.fit_transform(X_scaled)
+model = LinearRegression()
+model.fit(X_poly, y)
+
+# Function to make predictions
+
+def predict_insurance_payment(age, income, premium, insured_years, payment_type, insured_amount):
+    new_data = np.array([[age, income, premium, insured_years, payment_type, insured_amount]])
+    new_data_scaled = scaler_x.transform(new_data)
+    new_data_poly = poly_features.transform(new_data_scaled)
+    return model.predict(new_data_poly)[0]
+with open('AI//data/userData.json', 'r') as file:
+    data = json.load(file)
+prediction = predict_insurance_payment(data[dataFeatures]['Age'], data[dataFeatures]['Income'], data[dataFeatures]['Premium Amount'], data[dataFeatures]['Insured Years'], data[dataFeatures]['Payment Type'], data[dataFeatures]['Insured Amount'])
+
+print(prediction)

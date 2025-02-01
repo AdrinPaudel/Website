@@ -24,6 +24,7 @@
 .leftNav{
     flex:8;
     display: flex;
+    cursor: pointer;
 }
 .logo{
   flex: 1;
@@ -32,6 +33,9 @@
   height: 100%;
   background-size: contain;
   background-repeat: no-repeat;
+}
+#logo{
+    cursor: pointer;
 }
 .rightNav{
     flex:1;
