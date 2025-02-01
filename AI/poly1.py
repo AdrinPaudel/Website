@@ -32,6 +32,7 @@ def main(data_features):
     
     # Make prediction
     prediction = predict_percentage(scaler, poly, model, user_data)
+    # print(user_data)
     print(prediction)
 
 if __name__ == "__main__":

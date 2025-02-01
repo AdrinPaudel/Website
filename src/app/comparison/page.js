@@ -1,7 +1,7 @@
 "use client";
 
 import "./page.css";
-import "../api/runai.js";
+import { runPythonScript } from "../api/runai";
 import papa from "papaparse";
 import { useEffect, useState, useRef, React } from "react";
 import DataFilter from "./DataFilter";
@@ -15,7 +15,6 @@ import companyPolicies from "/data/companyPolicies.json";
 import paymentMethods from "/data/paymentMethods.json";
 import rebateBrackets from "/data/rebateBrackets.json";
 import policiesData from "/data/Policies.json";
-import { filter } from "mathjs";
 
 const company1Policies = [1, 2, 3, 10, 11, 16, 17];
 const company2Policies = [4, 5, 6, 12, 13, 18, 19];
@@ -132,8 +131,8 @@ export default function Compare() {
         let filteredData = DataFilter(formData);
 
         // Filter and process policies
-        const processedPolicies =
-          filteredData.map((policyData) => {
+        const processedPolicies = await Promise.all(
+          filteredData.map(async (policyData) => {
             const policyNumber = policyData.policy;
 
             // Check if policy matches selected add-ons
@@ -144,7 +143,7 @@ export default function Compare() {
             if (!hasAllAddons) return null;
 
             // Calculate premium and add-on cost
-            const premium = calculatePremium(formData, policyNumber);
+            const premium = await calculatePremium(formData, policyNumber);
             const addonCost = calculateTotalAddonsCost(selectedAddons, formData);
 
             // Get policy details
@@ -167,12 +166,13 @@ export default function Compare() {
               companyName,
             };
           })
+        );
 
 
         // >>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-        const validPolicies = processedPolicies.filter(Boolean);
+        const validData = processedPolicies.filter(Boolean);
 
         // Fetch prediction once
         validData.sort((a, b) => a.premium - b.premium);
@@ -180,9 +180,8 @@ export default function Compare() {
         // Map policies to comparison result
         // Process policies sequentially instead of parallel
         const comparisonResult = [];
-        for (const policy of validPolicies) {
+        for (const policy of validData) {
           const premValue = await policy.premium;
-          console.log(premValue);
 
           // Update premium and wait for it to complete
           await fetch('/api/updatePremium', {
@@ -194,8 +193,8 @@ export default function Compare() {
           // Wait for the prediction after updating the premium
           const floatprediction = parseFloat(await runPythonScript("data1"));
           // console.log(typeof prediction)
-          const prediction = Number(floatprediction.toFixed(3));
-
+          const prediction =  Number(floatprediction.toFixed(3));
+          console.log(prediction)
 
           const policyDetails = policiesData.policies.find((p) => p.policy === policy.policy);
           const minAmount = policyDetails?.min || "N/A";
