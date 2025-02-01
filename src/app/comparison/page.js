@@ -15,6 +15,7 @@ import companyPolicies from "/data/companyPolicies.json";
 import paymentMethods from "/data/paymentMethods.json";
 import rebateBrackets from "/data/rebateBrackets.json";
 import policiesData from "/data/Policies.json";
+import { filter } from "mathjs";
 
 const company1Policies = [1, 2, 3, 10, 11, 16, 17];
 const company2Policies = [4, 5, 6, 12, 13, 18, 19];
@@ -126,41 +127,37 @@ export default function Compare() {
     // Only run when formData is available
     if (formData.name !== "") {
       async function processPolicies() {
-        // Get the filtered policies (synchronously from DataFilter)
+
         let filteredData = DataFilter(formData);
-  
-        // Process each policy asynchronously
-        const processedData = await Promise.all(
-          filteredData.map(async (policyData) => {
+
+        // Filter and process policies
+        const processedPolicies =
+          filteredData.map((policyData) => {
+            console.log("looping over policies")
             const policyNumber = policyData.policy;
-  
-            // Check if the policy has all the selected add-ons
+
+            // Check if policy matches selected add-ons
             const hasAllAddons = selectedAddons.every((addon) =>
               hasAddonForPolicy(policyNumber, parseFloat(addon))
             );
-            if (!hasAllAddons) {
-              return null; // Exclude this policy if it doesn't match the add-ons
-            }
-  
-            // Calculate premium asynchronously
-            const premium = await calculatePremium(formData, policyNumber);
-            // Calculate add-on cost synchronously
-            const addoncost = calculateTotalAddonsCost(selectedAddons, formData);
-  
-            // Get CSR, Policy Name, and Company Name
+
+            if (!hasAllAddons) return null;
+
+            // Calculate premium and add-on cost
+            const premium = calculatePremium(formData, policyNumber);
+            const addonCost = calculateTotalAddonsCost(selectedAddons, formData);
+
+            // Get policy details
             const csr = getCsrByPolicyNumber(policyNumber);
             const policyName = getPolicyNameByPolicyNumber(policyNumber);
-  
-            // Determine the company name based on policy number
-            let companyName = "";
-            if (company1Policies.includes(policyNumber)) {
-              companyName = "Himalayan Life";
-            } else if (company2Policies.includes(policyNumber)) {
-              companyName = "LIC Nepal";
-            } else if (company3Policies.includes(policyNumber)) {
-              companyName = "Nepal Life";
-            }
-  
+            const companyName = company1Policies.includes(policyNumber)
+              ? "Himalayan Life"
+              : company2Policies.includes(policyNumber)
+                ? "Life Insurance Corporation Nepal"
+                : company3Policies.includes(policyNumber)
+                  ? "Nepal Life"
+                  : "";
+
             return {
               ...policyData,
               premium,
@@ -170,69 +167,82 @@ export default function Compare() {
               companyName,
             };
           })
-        );
-  
-        // Filter out any null entries
-        const validData = processedData.filter(Boolean);
-  
-        // Sort the policies by premium amount in ascending order (lower premium first)
+
+
+
+	      const validPolicies = processedPolicies.filter(Boolean);
+
+        // Fetch prediction once
         validData.sort((a, b) => a.premium - b.premium);
-  
-        // Now create the JSX elements
-        const policyCards = validData.map((policy, index) => {
-          // Get additional details from policiesData
-          const policyDetails = policiesData.policies.find(
-            (p) => p.policy === policy.policy
-          );
-          const minAmount = policyDetails?.min || "N/A";
-          const maxAmount = policyDetails?.max || "N/A";
-          const minEntryAge = policyDetails?.minEntry || "N/A";
-          const maxEntryAge = policyDetails?.maxEntry || "N/A";
-          const minYears = policyDetails?.minYears || "N/A";
-          const maxYearsA = policyDetails?.maxYa || "N/A";
-          const maxYearsB = policyDetails?.maxYb || "N/A";
-  
-          // Create a description based on policy type
-          let policyTypeDetails = "";
-          if (policy.policy >= 1 && policy.policy <= 9) {
-            policyTypeDetails =
-              "The return of the money with premium and additional profit is at the end of the term, and the amount depends on the market rate.";
-          } else if ([10, 12, 14].includes(policy.policy)) {
-            policyTypeDetails =
-              "This policy returns 15% at 5 years, 25% at 10 years, and 60% at 15 years for a 15-year plan. For 20- and 25-year plans, the return rates adjust accordingly.";
-          } else if ([11, 13, 15].includes(policy.policy)) {
-            policyTypeDetails =
-              "This policy returns 25% at 5 years, 25% at 10 years, and 50% at 15 years for a 15-year plan. Adjusted percentages for longer plans.";
-          } else if (policy.policy >= 16 && policy.policy <= 21) {
-            policyTypeDetails = "This is a term life insurance plan with no maturity benefit.";
-          }
-  
-          return (
-            <div key={index} className="filteredPolicies">
-              <h1>
-                {policy.policyName}
-                <span className="cardPolicyId">{policy.policy}</span>
-              </h1>
-              <div className="cardCompanyName">{policy.companyName}</div>
-              <div className="cardCSR">CSR: {policy.csr || "N/A"}</div>
-              <div className="cardCost">
+
+        // Map policies to comparison result
+        // Process policies sequentially instead of parallel
+const comparisonResult = [];
+for (const policy of validPolicies) {
+  const premValue = await policy.premium;
+  console.log(premValue);
+
+  // Update premium and wait for it to complete
+  await fetch('/api/updatePremium', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ formData, premium: premValue }),
+  });
+
+  // Wait for the prediction after updating the premium
+  const floatprediction = parseFloat(await runPythonScript("data1"));
+  // console.log(typeof prediction)
+  const prediction = Number(floatprediction.toFixed(3));
+
+
+  const policyDetails = policiesData.policies.find((p) => p.policy === policy.policy);
+  const minAmount = policyDetails?.min || "N/A";
+  const maxAmount = policyDetails?.max || "N/A";
+  const minEntryAge = policyDetails?.minEntry || "N/A";
+  const maxEntryAge = policyDetails?.maxEntry || "N/A";
+  const minYears = policyDetails?.minYears || "N/A";
+  const maxYearsA = policyDetails?.maxYa || "N/A";
+  const maxYearsB = policyDetails?.maxYb || "N/A";
+
+  let policyTypeDetails = "";
+  if (policy.policy >= 1 && policy.policy <= 9) {
+    policyTypeDetails =
+      "The return of the money with premium and additional profit is at the end of the term, and the amount depends on the market rate.";
+  } else if ([10, 12, 14].includes(policy.policy)) {
+    policyTypeDetails =
+      "This policy returns 15% at 5 years, 25% at 10 years, and 60% at 15 years for a 15-year plan. For 20- and 25-year plans, the return rates adjust accordingly.";
+  } else if ([11, 13, 15].includes(policy.policy)) {
+    policyTypeDetails =
+      "This policy returns 25% at 5 years, 25% at 10 years, and 50% at 15 years for a 15-year plan. Adjusted percentages for longer plans.";
+  } else if (policy.policy >= 16 && policy.policy <= 21) {
+    policyTypeDetails = "This is a term life insurance plan with no maturity benefit.";
+  }
+
+  comparisonResult.push(
+    <div className="filteredPolicies" key={policy.policy}>
+      <h1>
+        {policy.policyName}
+        <span className="cardPolicyId">{policy.policy}</span>
+      </h1>
+      <div className="cardCompanyName">{policy.companyName}</div>
+      <div className="cardCSR">CSR: {policy.csr || "N/A"}</div>
+      <div className="cardCost">
                 <div className="cardPremiumCost">
                   Premium: रु {policy.premium || "0"}
                 </div>
-              </div>
+      </div>
               <div className="cardCost">
                 <div className="cardAddonCost">
                   AddonCost: रु {policy.addonCost || "0"}
                 </div>
-              </div>
-  
-              <h3
+      </div>
+      <div className="cardPred">Prediction is: {prediction}</div>
+      <h3
                 className="detailsTitle"
                 onClick={() => setDetailsDisplay((prev) => !prev)}
               >
                 Policy Details
-              </h3>
-              <div
+              </h3><div
                 ref={(el) => (policyDetailsRef.current[policy.policy] = el)}
                 className="policyDetails hiddenDetails"
               >
@@ -296,17 +306,103 @@ export default function Compare() {
             </div>
           );
         });
-  
-        // Finally, update the state with the sorted and processed policy cards
-        setComparisonResult(policyCards);
+
+        setComparisonResult(comparisonResult);
       }
-  
-      // Call the async function
+
       processPolicies();
     }
   }, [formData, selectedAddons]);
-  
-  
+//        const validPolicies = processedPolicies.filter(Boolean);
+//
+//        // Fetch prediction once
+//
+//        // Map policies to comparison result
+//        // Process policies sequentially instead of parallel
+//const comparisonResult = [];
+//for (const policy of validPolicies) {
+//  const premValue = await policy.premium;
+//  console.log(premValue);
+//
+//  // Update premium and wait for it to complete
+//  await fetch('/api/updatePremium', {
+//    method: 'POST',
+//    headers: { 'Content-Type': 'application/json' },
+//    body: JSON.stringify({ formData, premium: premValue }),
+//  });
+//
+//  // Wait for the prediction after updating the premium
+//  const floatprediction = parseFloat(await runPythonScript("data1"));
+//  // console.log(typeof prediction)
+//  const prediction = Number(floatprediction.toFixed(3));
+//
+//
+//  const policyDetails = policiesData.policies.find((p) => p.policy === policy.policy);
+//  const minAmount = policyDetails?.min || "N/A";
+//  const maxAmount = policyDetails?.max || "N/A";
+//  const minEntryAge = policyDetails?.minEntry || "N/A";
+//  const maxEntryAge = policyDetails?.maxEntry || "N/A";
+//  const minYears = policyDetails?.minYears || "N/A";
+//  const maxYearsA = policyDetails?.maxYa || "N/A";
+//  const maxYearsB = policyDetails?.maxYb || "N/A";
+//
+//  let policyTypeDetails = "";
+//  if (policy.policy >= 1 && policy.policy <= 9) {
+//    policyTypeDetails =
+//      "The return of the money with premium and additional profit is at the end of the term, and the amount depends on the market rate.";
+//  } else if ([10, 12, 14].includes(policy.policy)) {
+//    policyTypeDetails =
+//      "This policy returns 15% at 5 years, 25% at 10 years, and 60% at 15 years for a 15-year plan. For 20- and 25-year plans, the return rates adjust accordingly.";
+//  } else if ([11, 13, 15].includes(policy.policy)) {
+//    policyTypeDetails =
+//      "This policy returns 25% at 5 years, 25% at 10 years, and 50% at 15 years for a 15-year plan. Adjusted percentages for longer plans.";
+//  } else if (policy.policy >= 16 && policy.policy <= 21) {
+//    policyTypeDetails = "This is a term life insurance plan with no maturity benefit.";
+//  }
+//
+//  comparisonResult.push(
+//    <div className="filteredPolicies" key={policy.policy}>
+//      <h1>
+//        {policy.policyName}
+//        <span className="cardPolicyId">{policy.policy}</span>
+//      </h1>
+//      <div className="cardCompanyName">{policy.companyName}</div>
+//      <div className="cardCSR">CSR: {policy.csr || "N/A"}</div>
+//      <div className="cardCost">
+//        <div className="cardPremiumCost">Premium: रु {policy.premium || "0"}</div>
+//        <div className="cardAddonCost">AddonCost: रु {policy.addonCost || "0"}</div>
+//      </div>
+//      <div className="cardPred">Prediction is: {prediction}</div>
+//      <h3 className="detailsTitle">Policy Details</h3>
+//      <div className="policyDetails hiddenDetails">
+//        <p>
+//          This {policy.policyName} is offered by {policy.companyName}.
+//        </p>
+//        <p>
+//          The minimum insured amount for this plan is रु{minAmount} with a maximum of रु{maxAmount}.
+//        </p>
+//        <p>
+//          The minimum entry age is {minEntryAge} years with a maximum entry age of {maxEntryAge} years.
+//        </p>
+//        <p>
+//          The policy term ranges from {minYears} years to {maxYearsA} (or {maxYearsB}) years.
+//        </p>
+//        <p>{policyTypeDetails}</p>
+//        <p>
+//          This plan can be taken by visiting any closest {policy.companyName} branch or contacting agents of {policy.companyName}.
+//        </p>
+//      </div>
+//    </div>
+//  );
+//}
+//
+//        setComparisonResult(comparisonResult);
+//      }
+//
+//      processPolicies();
+//    }
+//  }, [formData, selectedAddons]);
+//>>>>>>> 37aff56 (To fix the stuff)
 
   const handleAddonChange = (event) => {
     const addonNumber = event.target.id;
