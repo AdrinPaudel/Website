@@ -1,11 +1,11 @@
 {
   "data1": {
-    "Age": 50,
-    "Income": 12000,
+    "Age": 25,
+    "Income": 1000000,
     "Insurance Type": 1,
-    "Premium Amount": 13000,
-    "Insured Years": 30,
-    "Payment Type": 0,
-    "Insured Amount": 14000
+    "Premium Amount": 88824,
+    "Insured Years": 20,
+    "Payment Type": 1,
+    "Insured Amount": 500000
   }
 }

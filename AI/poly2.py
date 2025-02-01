@@ -1,8 +1,9 @@
+# train_model.py
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, PolynomialFeatures
-from sklearn.linear_model import LinearRegression, Ridge
-from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.linear_model import Ridge
+from joblib import dump
 
 def load_and_preprocess_data(csv_path):
     # Read and preprocess data
@@ -16,53 +17,37 @@ def load_and_preprocess_data(csv_path):
     data['Insurance Type'] = data['Insurance Type'].map(insurance_type_map)
     
     # Separate features and target
-    features = ['Age', 'Income', 'Insurance Type', 'Premium Amount', 
+    features = ['Age', 'Income', 'Insurance Type', 'Premium Amount',
                 'Insured Years', 'Payment Type', 'Insured Amount']
     X = data[features]
     y = data['Percentage of Payment']
     
     return X, y
 
-def train_prediction_model(X, y):
-    # Scale features
+def train_and_save_model(csv_path, model_dir='models/'):
+    # Create models directory if it doesn't exist
+    import os
+    os.makedirs(model_dir, exist_ok=True)
+    
+    # Load and preprocess data
+    X, y = load_and_preprocess_data(csv_path)
+    
+    # Initialize transformers and model
     scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-    
-    # Polynomial features
     poly = PolynomialFeatures(degree=2, include_bias=False)
-    X_poly = poly.fit_transform(X_scaled)
-    
-    # Use Ridge regression for regularization
     model = Ridge(alpha=1.0)
+    
+    # Fit transformers and model
+    X_scaled = scaler.fit_transform(X)
+    X_poly = poly.fit_transform(X_scaled)
     model.fit(X_poly, y)
     
-    return scaler, poly, model
+    # Save transformers and model
+    dump(scaler, f'{model_dir}scaler.joblib')
+    dump(poly, f'{model_dir}poly.joblib')
+    dump(model, f'{model_dir}model.joblib')
+    
+    print("Model and transformers saved successfully!")
 
-def predict_percentage(scaler, poly, model, input_data):
-    # Prepare input data
-    input_df = pd.DataFrame([input_data])
-    
-    # Scale and transform input
-    input_scaled = scaler.transform(input_df)
-    input_poly = poly.transform(input_scaled)
-    
-    # Predict and clip result
-    prediction = model.predict(input_poly)[0]
-    return max(0, min(prediction, 100))
-
-def evaluate_model(X, y):
-    # Scale features
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-    
-    # Polynomial features
-    poly = PolynomialFeatures(degree=2, include_bias=False)
-    X_poly = poly.fit_transform(X_scaled)
-    
-    # Perform cross-validation
-    model = Ridge(alpha=1.0)
-    scores = cross_val_score(model, X_poly, y, cv=5, scoring='neg_mean_absolute_error')
-    
-    # print("Cross-validation MAE scores:", -scores)
-    # print("Mean MAE:", -scores.mean())
-
+if __name__ == "__main__":
+    train_and_save_model('./data.csv')
