@@ -41,23 +41,28 @@ export default function DataFilter(data) {
     .filter((policy) => {
       if (userType === 0) return true; // No specific type, consider all policies
       if (userType === 1 && policy.policy >= 1 && policy.policy <= 9) return true; // Endowment type
-      if (userType === 2 && policy.policy >= 10 && policy.policy <= 15 && policy.exactTerms?.includes(userInsuredTerm)) return true; // MoneyBack type, specific terms only
+      if (userType === 2 && policy.policy >= 10 && policy.policy <= 15 && policy.exactTerms?.includes(userInsuredTerm)) return true; 
       if (userType === 3 && policy.policy >= 16 && policy.policy <= 21) return true; // Term Life type
       return false;
     })
     .filter((policy) => {
       // Apply age, insured amount, and term filters
       const maxYearsAllowed = policy.maxYears(userAge);
+      console.log(maxYearsAllowed, " max years allowed");
       
-      return (
-        userAge >= policy.minEntry &&
-        userAge <= policy.maxEntry &&
-        userInsuredAmount >= policy.min && // Compare insured amount
-        userInsuredAmount <= policy.max && // Compare insured amount
-        userInsuredTerm >= policy.minYears &&
-        userInsuredTerm <= maxYearsAllowed
-      );
+      console.log(policy.minEntry, policy.maxEntry, policy.min, policy.max, policy.minYears, maxYearsAllowed, " : filteredPolicies");
+      if (userAge < policy.minEntry || userAge > policy.maxEntry) {
+        return false; 
+      }
+      if (userInsuredAmount < policy.min || userInsuredAmount > policy.max) {
+        return false; 
+      }
+      if (userInsuredTerm < policy.minYears || userInsuredTerm > maxYearsAllowed) {
+        return false; 
+      }
+      return true; 
     });
+
 
   // Log filtered policies to see which are available
 
