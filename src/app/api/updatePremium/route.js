@@ -1,15 +1,13 @@
-import {handlePremiumUpdate}  from 'src/app/api/write2Json.js';
+import { handlePremiumUpdate } from '../write2Json.js';
+import { NextResponse } from 'next/server';
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-  
-  const { formData, premium } = req.body;
+export async function POST(request) {
   try {
+    const { formData, premium } = await request.json();
     await handlePremiumUpdate(formData, premium);
-    res.status(200).json({ message: 'Premium updated successfully' });
+    return NextResponse.json({ message: 'Premium updated successfully' }, { status: 200 });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to update premium' });
+    console.error('Premium update error:', error);
+    return NextResponse.json({ error: 'Failed to update premium' }, { status: 500 });
   }
 }
