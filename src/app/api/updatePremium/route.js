@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 export async function POST(request) {
   try {
     const { formData, premium } = await request.json();
-    await handlePremiumUpdate(formData, premium);
+    handlePremiumUpdate(formData, premium);
     return NextResponse.json({ message: 'Premium updated successfully' }, { status: 200 });
   } catch (error) {
     console.error('Premium update error:', error);

@@ -189,6 +189,7 @@ export default function Compare() {
         const finalCards = [];
         for (const policy of validPolicies) {
           // Update the premium via an API call.
+          console.log("TST", policy.premium, formData)
           await fetch("/api/updatePremium", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

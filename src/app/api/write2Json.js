@@ -2,8 +2,8 @@
 import fs from 'fs';
 import path from 'path';
 
-export const handlePremiumUpdate = async (formData, premiumValuePromise) => {
-  const premiumValue = await premiumValuePromise;
+export const handlePremiumUpdate = (formData, premiumValue) => {
+console.log(formData, premiumValue)
   const updatedData = {
     data1: {
       "Age": parseInt(formData.age),

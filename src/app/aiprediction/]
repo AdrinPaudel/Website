@@ -11,7 +11,6 @@ export default function AIPredictionPage() {
     insuredAmount: "",
     insuredTerm: "",
     term: "1", 
-    type: "1",
   });
 
   const [premiumValue, setPremiumValue] = useState("");
@@ -39,7 +38,6 @@ export default function AIPredictionPage() {
 
     try {
       // First update the premium using updatePremium API
-      console.log("AI", premiumValue, formData)
       await fetch('/api/updatePremium', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
