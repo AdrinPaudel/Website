@@ -5,8 +5,8 @@ import "./Footer.css";
 
 export default function Footer() {
   const resList = [
-    { text: "Insured Amount Calculator", link: "/premiumCalculator" },
-    { text: "Term Completion Finder", link: "#" }, // Add correct path when available
+    { text: "Premium Amount Calculator", link: "/premiumCalculator" },
+    { text: "Term Completion Finder", link: "/aiprediction" }, // Add correct path when available
     { text: "Payout Lasting Calculator", link: "/yearslasting" },
     { text: "List of all life policies", link: "/listofpolicies" },
     { text: "Addon Details", link: "/addonsdetails" }, // Add correct path when available
@@ -20,8 +20,8 @@ export default function Footer() {
 
   const otherList = [
     { text: "About Us", link: "/aboutUs" },
-    { text: "Privacy Policy", link: "/privacyPolicy" },
-    { text: "Terms and Conditions", link: "/termsAndConditions" }
+    { text: "Privacy Policy", link: "/privacypolicy" },
+    { text: "Terms and Conditions", link: "/termsandconditions" }
   ];
 
   const otherListArr = otherList.map((item, index) => (

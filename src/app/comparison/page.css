@@ -214,10 +214,9 @@ div.surrounddatafields {
   transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
 }
 
-.detailsTitle:hover + .hiddenDetails,
-.addonsTitle:hover + .hiddenAddons {
-  display: block;
-  opacity: 1;
+.detailsTitle
+.addonsTitle {
+  cursor: pointer;
 }
 
 .filteredPolicies {
@@ -231,9 +230,9 @@ div.surrounddatafields {
   transition: height 0.3s ease-in-out;
 }
 
-.filteredPolicies:hover {
+/* .filteredPolicies:hover {
   height: auto;
-}
+} */
 
 .cardAddons {
   font-size: 1.2rem;
@@ -245,10 +244,10 @@ div.surrounddatafields {
   transition: 0.2s ease;
 }
 
-.cardAddons:hover .cardAddonsContent {
+/* .cardAddons:hover .cardAddonsContent {
   height: auto;
   padding: 2vw;
-}
+} */
 
 .cardAddonsContent {
   height: 0;
@@ -258,10 +257,11 @@ div.surrounddatafields {
   position: relative;
 }
 
-.filteredPolicies:hover .cardAddonsContent {
+/* .filteredPolicies:hover .cardAddonsContent {
   height: auto;
   overflow: visible;
-}
+} */
+
 
 
 #policyCards {
@@ -301,15 +301,16 @@ div.surrounddatafields {
 
 
 .cardAddonsContent {
-  max-height: none;
+  /* max-height: none; */
   overflow: visible;
   padding: 1rem;
   border-radius: 1vw;
+  height: fit-content;
 }
 
-.filteredPolicies:hover {
+/* .filteredPolicies:hover {
   height: auto;
-}
+} */
 
 
 
